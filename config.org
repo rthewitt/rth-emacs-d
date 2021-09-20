@@ -1,0 +1,574 @@
+#+TITLE: Ryan's GNU Emacs Config
+#+AUTHOR: Ryan Hewitt
+#+DESCRIPTION: Ryan's Personal Emac Config
+#+STARTUP: showeverything
+#+EXPORT_FILE_NAME: ~/org/html/config.html
+#+SETUPFILE: ~/.emacs.d/org-html-themes/org/theme-readtheorg.setup
+#+OPTIONS: num:nil ^:{}
+
+
+* IMPORTANT - THIS SNIPPET IS PLACED INIT.EL
+  Also note this is an example snippet, not source-code!
+
+#+begin_example
+(org-babel-load-file
+ (expand-file-name
+  "config.org"
+  user-emacs-directory))
+#+end_example
+
+* ABOUT THIS CONFIG
+  This configuration is an updated version of my existing config combined with the excellent work by DistroTube.  The config is designed to replicate the conveniences of DOOM Emacs as much as possible.  Creating the config for vanilla Emacs is an exercise in learning the internals.
+
+* A FEW PROGRAMS TO RUN FIRST
+  The order of the config is important.  Critical directives will run first, beginning with the following block.
+
+** Setup Package.el to work with MELPA
+   My original config had a few extra things like "org" and melpa-stable.  They may be redundant...
+   
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+(setq package-enable-at-startup nil)
+(package-refresh-contents)
+;; Package.el added an extra initialize to parent file!
+(package-initialize)
+#+END_SRC
+
+** Use-Packaged
+   Install use-package and enable ':enable t' globally. That cauases the package(s) within use-package to be installed automatically if not already present on the system. 
+   
+#+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'use-package)
+(package-install 'use-package))
+(setq use-package-always-ensure t)
+#+END_SRC
+
+** Move auto-save files and backups
+   These are annoying and pollute the local folder
+#+BEGIN_SRC emacs-lisp
+(setq auto-save-file-name-transforms
+      `((".*" ,(concat user-emacs-directory "auto-save/") t))) 
+;; I'm not sure why that didn't work, so I'm trying this method
+(setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
+#+END_SRC
+
+** Evil Mode
+   Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides facilities for writing custom extensions.  (I did not know that!) Evil Collection is also installed since it adds 'evil' bindings to parts of Emacs that the standard Evil package does not cover, such as: calendar, help-mode and ibuffer (??)
+
+#+BEGIN_SRC emacs-lisp
+(setq evil-toggle-key "C-;")
+(require 'evil)
+(require 'evil-commentary)
+(require 'evil-surround)
+; (setq evil-default-state 'emacs)
+(evil-mode t)
+(evil-commentary-mode t)
+(global-evil-surround-mode t)
+#+END_SRC
+
+** Persistent Scratch 
+   We want to save our notes between sessions
+
+#+BEGIN_SRC emacs-lisp
+;(require 'persistent-scratch)
+(global-undo-tree-mode) 
+(persistent-scratch-setup-default) ; save & autoload last
+;(persistent-scratch-autosave-mode 1) 
+#+END_SRC
+** General Keybindings
+   General.el allows us to set keybindings. The default Emacs methods of setting keybindings are ugly and seemingly inconsistent. In addition to porting my existing bindings, I may experiment with leader keys.  Doom Emacs uses the SPC key as a prefix to most commands.  This may be better on my fingers.
+
+#+BEGIN_SRC emacs-lisp
+(use-package general
+:config
+(general-evil-setup t))
+#+END_SRC
+
+* START-UP PERFORMANCE
+  This section will make emacs load more quickly.
+
+** Garbage Collection
+   Reduces the frequency of garbage collection. I'm not sure when this is recommended, and for which hardware.
+
+#+BEGIN_SRC emacs-lisp
+;; Using garbage magic hack.
+ (use-package gcmh
+   :config
+   (gcmh-mode 1))
+;; Setting garbage collection threshold
+(setq gc-cons-threshold 402653184
+      gc-cons-percentage 0.6)
+
+;; Profile emacs startup
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "*** Emacs loaded in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time)))
+                     gcs-done)))
+
+;; Silence compiler warnings as they can be pretty disruptive (setq comp-async-report-warnings-errors nil)
+#+END_SRC
+
+** Native Compile
+#+BEGIN_SRC emacs-lisp
+;; Silence compiler warnings as they can be pretty disruptive
+(if (boundp 'comp-deferred-compilation)
+    (setq comp-deferred-compilation nil)
+    (setq native-comp-deferred-compilation nil))
+;; In noninteractive sessions, prioritize non-byte-compiled source files to
+;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
+;; to skip the mtime checks on every *.elc file.
+(setq load-prefer-newer noninteractive)
+#+END_SRC
+   
+* ALL-THE-ICONS
+  These icons can be used in dashboar, dired, ibuffer, etc.
+  
+#+BEGIN_SRC emacs-lisp
+;; Had to manually run M-x all-the-icons-install-fonts
+(use-package all-the-icons)
+#+END_SRC
+
+* BUFFERS AND BOOKMARKS
+  These appear to be useful for DT. I do not use buffer commands extensively in Emacs yet, preferring C-x o.  I expect to change my behavior but for now the following block is NOT ACTIVE!
+
+#+BEGIN_EXAMPLE
+ (nvmap :prefix "SPC"
+       "b b"   '(ibuffer :which-key "Ibuffer")
+       "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
+       "b k"   '(kill-current-buffer :which-key "Kill current buffer")
+       "b n"   '(next-buffer :which-key "Next buffer")
+       "b p"   '(previous-buffer :which-key "Previous buffer")
+       "b B"   '(ibuffer-list-buffers :which-key "Ibuffer list buffers")
+       "b K"   '(kill-buffer :which-key "Kill buffer"))
+#+END_EXAMPLE
+  
+* EMACS DASHBOARD
+  Dashboard looks very interesting and may streamline my process, but I don't want it yet.
+
+* EVALUATE ELISP EXPRESSIONS
+I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eww' keybindings).
+
+* EVALUATE E(LISP) EXPRESSIONS
+  I have to admit this is pretty cool. I cannot seem to remember the evaluate bindings.
+
+| COMMAND         | DESCRIPTION                                    | KEYBINDING |
+|-----------------+------------------------------------------------+------------|
+| eval-buffer     | /Evaluate elisp in buffer/                       | SPC e b    |
+| eval-defun      | /Evaluate the defun containing or after point/   | SPC e d    |
+| eval-expression | /Evaluate an elisp expression/                   | SPC e e    |
+| eval-last-sexp  | /Evaluate elisp expression before point/         | SPC e l    |
+| eval-region     | /Evaluate elisp in region/                       | SPC e r    |
+
+#+BEGIN_SRC emacs-lisp
+(nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
+       "e b"   '(eval-buffer :which-key "Eval elisp in buffer")
+       "e d"   '(eval-defun :which-key "Eval defun")
+       "e e"   '(eval-expression :which-key "Eval elisp expression")
+       "e l"   '(eval-last-sexp :which-key "Eval last sexression")
+       "e r"   '(eval-region :which-key "Eval region"))
+#+END_SRC
+
+* FILES
+  DT has some really useful file-handling functions in his config. I think I will use these once I get used to leader keys. I don't want to accidentally affect files so the following block is *NOT ACTIVE*
+
+#+BEGIN_EXAMPLE
+(nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
+       "."     '(find-file :which-key "Find file")
+       "f f"   '(find-file :which-key "Find file")
+       "f r"   '(counsel-recentf :which-key "Recent files")
+       "f s"   '(save-buffer :which-key "Save file")
+       "f u"   '(sudo-edit-find-file :which-key "Sudo find file")
+       "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path")
+       "f C"   '(copy-file :which-key "Copy file")
+       "f D"   '(delete-file :which-key "Delete file")
+       "f R"   '(rename-file :which-key "Rename file")
+       "f S"   '(write-file :which-key "Save file as...")
+       "f U"   '(sudo-edit :which-key "Sudo edit file"))
+#+END_EXAMPLE
+
+* FONTS
+  DT is using SourceCodePro from nerf-fonts. The following snippet does not support italics or other variations. This is strange, and may be specific to AUR/Arch Linux.  I will be installing from WSL on my Windows box.
+
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'default nil
+  :font "Source Code Pro"
+  :height 110
+  :weight 'medium)
+(set-face-attribute 'variable-pitch nil
+  :font "Ubuntu Nerd Font"
+  :height 120
+  :weight 'medium)
+(set-face-attribute 'fixed-pitch nil
+  :font "Source Code Pro"
+  :height 110
+  :weight 'medium)
+;; Makes commented text and keywords italics.
+;; This is working in emacsclient but not emacs.
+;; Your font must have an italic face available.
+(set-face-attribute 'font-lock-comment-face nil
+  :slant 'italic)
+(set-face-attribute 'font-lock-keyword-face nil
+  :slant 'italic)
+
+;; Uncomment the following line if line spacing needs adjusting.
+(setq-default line-spacing 0.12)
+
+;; Needed if using emacsclient. Otherwise, your fonts will be smaller than expected.
+(add-to-list 'default-frame-alist '(font . "Source Code Pro-11"))
+;; changes certain keywords to symbols, such as lamda!
+(setq global-prettify-symbols-mode t)
+#+END_SRC
+
+** Use Greek Letters
+   We can turn lambda into lamda!
+
+#+BEGIN_SRC emacs-lisp
+(defconst
+  prettify-greek-lower
+  '(("phi" . ?φ)
+    ("lambda" . ?λ))
+  "Prettify rules for lower case greek letters.")
+
+(defun rewrite-the-greeks ()
+    (setq prettify-symbols-alist prettify-greek-lower)
+    (prettify-symbols-mode t))
+
+(add-hook 'lisp-mode-hook 'rewrite-the-greeks)
+(add-hook 'scheme-mode-hook 'rewrite-the-greeks)
+#+END_SRC
+
+** Zooming In and Out
+You can use the bindings CTRL plus =/- for zooming in/out.  You can also use CTRL plus the mouse wheel for zooming in/out.
+
+#+BEGIN_SRC emacs-lisp
+;; zoom in/out like we do everywhere else.
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+#+END_SRC
+
+* GENERAL KEYBINDINGS
+  The following may be very useful - especially if I want to migrate to or emulate DOOM. For now, the following are provided as an example only and are *NOT ACTIVE*.
+
+#+BEGIN_EXAMPLE
+(nvmap :keymaps 'override :prefix "SPC"
+       "SPC"   '(counsel-M-x :which-key "M-x")
+       "c c"   '(compile :which-key "Compile")
+       "c C"   '(recompile :which-key "Recompile")
+       "h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config")
+       "t t"   '(toggle-truncate-lines :which-key "Toggle truncate lines"))
+(nvmap :keymaps 'override :prefix "SPC"
+       "m *"   '(org-ctrl-c-star :which-key "Org-ctrl-c-star")
+       "m +"   '(org-ctrl-c-minus :which-key "Org-ctrl-c-minus")
+       "m ."   '(counsel-org-goto :which-key "Counsel org goto")
+       "m e"   '(org-export-dispatch :which-key "Org export dispatch")
+       "m f"   '(org-footnote-new :which-key "Org footnote new")
+       "m h"   '(org-toggle-heading :which-key "Org toggle heading")
+       "m i"   '(org-toggle-item :which-key "Org toggle item")
+       "m n"   '(org-store-link :which-key "Org store link")
+       "m o"   '(org-set-property :which-key "Org set property")
+       "m t"   '(org-todo :which-key "Org todo")
+       "m x"   '(org-toggle-checkbox :which-key "Org toggle checkbox")
+       "m B"   '(org-babel-tangle :which-key "Org babel tangle")
+       "m I"   '(org-toggle-inline-images :which-key "Org toggle inline imager")
+       "m T"   '(org-todo-list :which-key "Org todo list")
+       "o a"   '(org-agenda :which-key "Org agenda")
+       )
+#+END_EXAMPLE
+  
+* AGENDA MODE KEYBINDINGS (OLD)
+  These are my original (pre-general) agenda keybindings. I don't really want this limited to org-mode.
+
+#+BEGIN_SRC emacs-lisp
+;; (with-eval-after-load 'org
+;;   (bind-key "C-c a" #'org-agenda org-mode-map))
+(global-set-key (kbd "C-c a") 'org-agenda)
+#+END_SRC
+  
+* ESC KEY REMAPPING
+   I used this extensivel before getting an ergo-keyboard. I may wean myself off...
+
+** Old Version, Disabled
+#+BEGIN_EXAMPLE
+;; How this was done on previously
+;; Difference?  Perhaps 'jk' to activate evil behavior
+;;(require 'evil-escape)
+;;(evil-escape-mode 1)
+;;(setq evil-escape-key-sequence "jk")
+#+END_EXAMPLE
+
+** Working Version With Key-Chords
+#+BEGIN_SRC emacs-lisp
+(require 'key-chord)
+(key-chord-mode 1)
+(key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)
+#+END_SRC
+   
+* LANGUAGE SUPPORT
+  Adding packages for programming languages so we can have syntax highlighting.
+  These required *manual installation!*
+#+BEGIN_SRC emacs-lisp
+(use-package haskell-mode) ; xmonad, eventually
+(use-package lua-mode)
+(use-package markdown-mode)
+#+END_SRC
+
+* GRAPHICAL USER INTERFACE TWEAKS
+  Let's make GNU Emacs look a little better.
+
+** Disable Menubar, Toolbars and Scrollbars
+Less GUI ugliness.This became a hook when I started using
+#+BEGIN_EXAMPLE
+emacsclient -nc
+#+END_EXAMPLE
+because the server starts in terminal!
+
+#+BEGIN_SRC emacs-lisp
+(defun new-frame-setup (frame)
+  (if (display-graphic-p frame)
+     (progn
+       (tool-bar-mode 0)
+       (menu-bar-mode 0)
+       (scroll-all-mode 0)
+       (scroll-bar-mode 0)
+       (tooltip-mode 0))
+     (message "Not a window system")))
+
+(mapc 'new-frame-setup (frame-list)) ; for existing frames
+(add-hook 'after-make-frame-functions 'new-frame-setup)
+#+END_SRC
+
+** Disable Splash Screen
+   This is likely icompatible with DT's Dashboard
+
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-screen t)
+#+END_SRC
+
+** Display Line Numbers and Truncated Lines
+   Line numbers are useful. Am I missing relative lines? It was causing headaches in Vim...
+#+BEGIN_SRC emacs-lisp
+;; Only for Emacs v26.x+
+; (global-display-line-numbers-mode 1)
+(global-linum-mode 1)
+(global-visual-line-mode t)
+#+END_SRC
+
+** Change Modeline To Doom's Modeline
+#+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+#+END_SRC
+   
+** Shift Focus to Help Window
+   This lets me close more readily with 'q'
+#+BEGIN_SRC emacs-lisp
+(setq help-window-select t)
+#+END_SRC
+
+* ORG MODE  
+  Org mode is wonderful but could use a few tweaks.
+  
+** Defining Some Things
+   TODO: read up on these directives!
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook 'org-indent-mode)
+;; Note that my agenda files are set elsewhere for now
+(setq org-directory (expand-file-name "~/org/")
+      org-agenda-files '("~/org/agenda.org")
+      org-default-notes-file (expand-file-name "my-notes.org" org-directory)
+      org-ellipsis " ▼ "
+      org-log-done 'time 
+      org-journal-dir "~/org/journal/"
+      org-journal-date-format "%B %d, %Y (%A) "
+      org-journal-file-format "%Y-%m-%d.org"
+      org-hide-emphasis-markers t)
+      org-return-follows-link  t
+(setq org-src-preserve-indentation nil
+      org-src-tab-acts-natively t
+      org-edit-src-content-indentation 0)
+#+END_SRC
+
+** Enabling Org Bullets
+  Better looking lists by replacing asterisks
+  
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+#+END_SRC
+
+** Source-Code Block Syntax Highlighting
+   We want the same syntax highlighting in source blocks as in the native language files. TODO - RTFM
+   
+#+BEGIN_SRC emacs-lisp
+(setq org-src-fontify-natively t
+org-src-tab-acts-natively t
+org-confirm-babel-evaluate nil
+org-edit-src-content-indentation 0)
+#+END_SRC
+
+** Clean M-Ret Insertions
+Make M-Ret insert headings without blank lines
+
+#+BEGIN_SRC emacs-lisp
+(setq org-blank-before-new-entry (quote ((heading . nil)
+(plain-list-item . nil))))
+#+END_SRC
+
+* PROJECTILE
+  Adds the concept of projects to Emacs.  See https://www.emacswiki.org/emacs/Projectile
+  
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+:config
+(projectile-global-mode 1))
+#+END_SRC
+
+* SCROLLING
+  Emacs's default scrolling is annoying because of the sudden half-page jumps. Speed adjustments included.
+
+#+BEGIN_SRC emacs-lisp
+(setq scroll-conservatively 101) ;; Value greater than 100 gets rid of half-page jumping
+(setq mouse-wheel-scroll-amount '(3 ((shift) . 3))) ;; how many lines at a time
+(setq mouse-wheel-progressive-speed t) ;; accelerate scrolling
+;; t was quoted below originally. I assume this was a typo that worked
+(setq mouse-wheel-follow-mouse t) ;; scroll window under mouse
+#+END_SRC
+
+* SHELLS & REPLS
+  Shell specific configurations
+
+** Eshell
+   Eshell is an incredible bash-like shell with elisp integration. Very interesting!
+
+#+BEGIN_SRC emacs-lisp
+;; Clear Screen
+(add-hook 'eshell-mode-hook 
+          (lambda () 
+            (define-key eshell-mode-map (kbd "C-l") 
+                        (lambda () 
+                          (interactive) 
+                          (eshell/clear-scrollback) 
+                          (eshell-send-input)))))
+;; Kill backward like Bash
+(add-hook 'eshell-mode-hook 
+          (lambda () 
+            (define-key eshell-mode-map (kbd "C-u") 'eshell-kill-input)))
+#+END_SRC
+
+
+** SLIME
+   SLIME allows for interactive Common-Lisp evaluation. Make it more bash-like with shortcuts
+
+#+BEGIN_SRC emacs-lisp
+(load (expand-file-name "~/.quicklisp/slime-helper.el"))
+(setq inferior-lisp-program "/usr/bin/sbcl")
+
+(eval-after-load 'slime-repl
+  `(define-key slime-repl-mode-map (kbd "C-l") 'slime-repl-clear-buffer))
+#+END_SRC
+
+** Tramp
+   Tramp lets you edit remote files as if they were local. The default protocol attempt below is not working.
+#+BEGIN_SRC emacs-lisp
+;; Not working, says method - is unrecognized
+;; Probably I need to update my Tramp/Emacs versions
+; (require 'tramp)
+; (customize-set-variable 'tramp-default-method "ssh")
+; (add-to-list 'tramp-default-method-alist '("sm" "" "ssh")) ; using ssh_config to set user
+#+END_SRC
+
+* THEME
+  This was my original theme.  The following is not active because I want to test the DOOM Look & Feel.
+
+#+BEGIN_EXAMPLE
+; (load-theme 'tango-dark t)
+
+;; set transparency
+; (set-frame-parameter (selected-frame) 'alpha '(85 85))
+; (add-to-list 'default-frame-alist '(alpha 85 85))
+#+END_EXAMPLE
+
+** DOOM theme
+#+BEGIN_SRC emacs-lisp
+(use-package doom-themes)
+;; if the following are nil, they are universally disabled
+(setq doom-themes-enable-bold t
+      doom-themes-enable-italic t)
+(load-theme 'doom-one t)
+#+END_SRC
+
+** Lisp Syntax Guidance
+   These changes are due to a project that has a lot of global state.
+   I tried adding earmuff convention (with colors)
+   and an intelligent warning for setq (incomplete)
+
+#+BEGIN_SRC emacs-lisp
+;; For some reason I cannot seem to define my own face correctly
+;; Even following examples precisely...
+
+;; (defface font-lock-func-face
+;;   '((nil (:foreground "#7F0055" :weight bold))
+;;     (t (:bold t :italic t)))
+;;   "Font Lock mode face used for function calls."
+;;   :group 'font-lock-highlighting-faces)
+
+;; (font-lock-add-keywords
+;;  'lisp-mode
+;;  '(("(\\s-*\\(\\_<\\(?:\\sw\\/\\s_\\)+\\)\\_>"
+;;     1 'font-lock-func-face)))
+
+(font-lock-add-keywords 
+  'lisp-mode '(
+	       ;; for exclamation point I tried red, yellow, blue - all seem redundant...
+	       ("(\\([^ ]*!\\).*)" 1 'font-lock-warning-face) ;; side-effects identifier
+	       ;; This currently gives false positives when globals are nested inside function calls within setq
+	       ;; Also it's a No-No acccording to the docs.  We should not define multi-line matchers.  See:
+	       ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Multiline-Font-Lock.html
+	       ("(\\(setq\\)[\0-\377[:nonascii:]]*?\\*[^ ]*\\*[\0-\377[:nonascii:]]*?)" 1 font-lock-warning-face) ;; globals dangerously set
+               ("\\*[^ ]*\\*" . font-lock-type-face)  ;; normal globals identifier
+	       ))
+#+END_SRC
+
+* RUNTIME PERFORMANCE
+  Dial the GC threshold back down so that garbage collection happens more frequently but in less time
+  What does this even mean? Is this stateful? Did we change behavior just for config loading?
+
+#+BEGIN_SRC emacs-lisp
+;; make gc pause faster by decreasing threshold for run
+(setq gc-cons-threshold (* 2 1000 1000))
+#+END_SRC
+
+* DARKROOM MODE
+  A distraction-free writing mode. No global changes like write-room, possibly similar to zen
+
+#+BEGIN_SRC emacs-lisp
+(use-package darkroom)
+#+END_SRC
+* MISCELANEOUS, MISSING
+Items I've left off from the DT Config include:
+- Ivy
+- Magit
+- Neotree
+- Emojis
+- Org Link Abbreviations (??)
+- Org TODO keywords
+- Perspectives - Emacs buffer groups
+- Emacs Registers - How do these differ from evil-mode :reg?
+- Shell colors (requires DT git repos)
+- Window control and key bindings
+- Which-key (still don't undestand how this differs from default tab-completion)
+ 
+

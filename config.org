@@ -3,7 +3,7 @@
 #+DESCRIPTION: Ryan's Personal Emac Config
 #+STARTUP: showeverything
 #+EXPORT_FILE_NAME: ~/org/html/config.html
-#+SETUPFILE: ~/.emacs.d/org-html-themes/org/theme-readtheorg.setup
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 #+OPTIONS: toc:2
 #+OPTIONS: num:nil ^:{}
 

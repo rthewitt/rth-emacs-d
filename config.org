@@ -42,6 +42,7 @@
     -   [[Defining Some Things]]
     -   [[Setting the default browser]]
     -   [[Enabling Org Bullets]]
+    -   [[Source-Code Block Tag Expansion]]
     -   [[Source-Code Block Syntax Highlighting]]
     -   [[Clean M-Ret Insertions]]
 -   [[PROJECTILE]]
@@ -494,6 +495,18 @@ because the server starts in terminal!
 (use-package org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+END_SRC
+
+** Source-Code Block Tag Expansion
+
+We'll be using org-temp becuase it's in-document.  However do note that the new functionality *org-insert-structure-template* is bound to *C-c C-,*
+
+#+Begin_src emacs-lisp
+(use-package org-tempo
+  :ensure nil) ;; don't try to install this, built-in
+
+(add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+(add-to-list 'org-structure-template-alist '("cl" "#+BEGIN_SRC common-lisp\n?\n#+END_SRC"))
+#+end_src
 
 ** Source-Code Block Syntax Highlighting
    We want the same syntax highlighting in source blocks as in the native language files. TODO - RTFM

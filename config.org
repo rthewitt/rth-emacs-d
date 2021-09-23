@@ -3,9 +3,11 @@
 #+DESCRIPTION: Ryan's Personal Emac Config
 #+STARTUP: showeverything
 #+EXPORT_FILE_NAME: ~/org/html/config.html
-#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 #+OPTIONS: toc:2
 #+OPTIONS: num:nil ^:{}
+Reactivate for online rendering? Or maybe not even necessary
+AFter all, I had this as a local file before I stumbled with the Github stuff
+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
 * TABLE OF CONTENTS :TOC:
 -   [[IMPORTANT - THIS SNIPPET IS PLACED INIT.EL]]
@@ -34,12 +36,13 @@
 -   [[LANGUAGE SUPPORT]]
 -   [[GRAPHICAL USER INTERFACE TWEAKS]]
     -   [[Disable Menubar, Toolbars and Scrollbars]]
-    -   [[disable-splash-screen][Disable Splash Screen]]
+    -   [[Disable Splash Screen]]
     -   [[Display Line Numbers and Truncated Lines]]
     -   [[Change Modeline To Doom's Modeline]]
     -   [[Shift Focus to Help Window]]
 -   [[ORG MODE]]
     -   [[Defining Some Things]]
+    -   [[Setting the default browser]]
     -   [[Enabling Org Bullets]]
     -   [[Source-Code Block Syntax Highlighting]]
     -   [[Clean M-Ret Insertions]]
@@ -75,9 +78,9 @@
 ** Setup Package.el to work with MELPA
    My original config had a few extra things like "org" and melpa-stable.  They may be redundant...
    
-#+BEGIN_SRC emacs-lisp
+*TODO FIXME REACTIVATE*
++BEGIN_SRC emacs-lisp
 (require 'package)
-
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
@@ -87,7 +90,7 @@
 (package-refresh-contents)
 ;; Package.el added an extra initialize to parent file!
 (package-initialize)
-#+END_SRC
++END_SRC
 
 ** Use-Packaged
    Install use-package and enable ':enable t' globally. That cauases the package(s) within use-package to be installed automatically if not already present on the system. 
@@ -334,6 +337,16 @@ You can use the bindings CTRL plus =/- for zooming in/out.  You can also use CTR
        "o a"   '(org-agenda :which-key "Org agenda")
        )
 #+END_EXAMPLE
+
+My Personal keybindings. I'll add DT's after I play with this
+#+BEGIN_SRC emacs-lisp
+(nvmap :keymaps 'override :prefix "SPC"
+       "h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config")
+       "m t"   '(org-todo :which-key "Org todo")
+       "m z"   '(darkroom-tentative-mode :which-key "Darkroom (Tentative)")
+       "o a"   '(org-agenda :which-key "Org agenda")
+       )
+#+END_SRC
   
 * AGENDA MODE KEYBINDINGS (OLD)
   These are my original (pre-general) agenda keybindings. I don't really want this limited to org-mode.
@@ -398,6 +411,9 @@ because the server starts in terminal!
 #+END_SRC
 
 ** Disable Splash Screen
+:PROPERTIES:
+:ID:       09958748-df0a-438c-b66a-ce890b90d47d
+:END:
    This is likely icompatible with DT's Dashboard
 
 #+BEGIN_SRC emacs-lisp
@@ -437,7 +453,7 @@ because the server starts in terminal!
 ;; I need to customize agenda...
 ;; It's currently writing to my notes file
 (setq org-directory (expand-file-name "~/org/")
-      org-agenda-files '("~/org/agenda.org" "~/org/notes.org")
+      org-agenda-files '("~/org/agenda.org" "~/org/notes.org" "~/org/goals.org")
       org-default-notes-file (expand-file-name "notes.org" org-directory)
       org-ellipsis " ▼ "
       org-log-done 'time 
@@ -449,6 +465,24 @@ because the server starts in terminal!
 (setq org-src-preserve-indentation nil
       org-src-tab-acts-natively t
       org-edit-src-content-indentation 0)
+#+END_SRC
+
+** Setting the default browser
+#+BEGIN_SRC emacs-lisp
+;; The following didn't work eith an environment variable
+
+;(setq browse-url-generic-program 
+;    (executable-find (getenv "BROWSER")) 
+;     browse-url-browser-function 'browse-url-generic)
+
+;; Redditor sets this only if on WSL
+;; I'm leaving it as is for now
+(let ((cmd-exe "/mnt/c/Windows/System32/cmd.exe")
+      (cmd-args '("/c" "start")))
+    (when (file-exists-p cmd-exe)
+      (setq browse-url-generic-program  cmd-exe
+            browse-url-generic-args     cmd-args
+            browse-url-browser-function 'browse-url-generic)))
 #+END_SRC
 
 ** Enabling Org Bullets

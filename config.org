@@ -2,12 +2,10 @@
 #+AUTHOR: Ryan Hewitt
 #+DESCRIPTION: Ryan's Personal Emac Config
 #+STARTUP: showeverything
+#+SETUPFILE: ~/.emacs.d/org-html-themes/org/theme-readtheorg.setup
 #+EXPORT_FILE_NAME: ~/org/html/config.html
 #+OPTIONS: toc:2
 #+OPTIONS: num:nil ^:{}
-Reactivate for online rendering? Or maybe not even necessary
-AFter all, I had this as a local file before I stumbled with the Github stuff
-SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
 * TABLE OF CONTENTS :TOC:
 -   [[IMPORTANT - THIS SNIPPET IS PLACED INIT.EL]]
@@ -71,6 +69,9 @@ SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
 * ABOUT THIS CONFIG
   This configuration is an updated version of my existing config combined with the excellent work by DistroTube.  The config is designed to replicate the conveniences of DOOM Emacs as much as possible.  Creating the config for vanilla Emacs is an exercise in learning the internals.
+
+The theme file for this config can be found at:
+https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
 * A FEW PROGRAMS TO RUN FIRST
   The order of the config is important.  Critical directives will run first, beginning with the following block.

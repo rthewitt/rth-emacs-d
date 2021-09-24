@@ -600,15 +600,7 @@ Make M-Ret insert headings without blank lines
 #+END_SRC
 
 * THEME
-  This was my original theme.  The following is not active because I want to test the DOOM Look & Feel.
-
-#+BEGIN_EXAMPLE
-; (load-theme 'tango-dark t)
-
-;; set transparency
-; (set-frame-parameter (selected-frame) 'alpha '(85 85))
-; (add-to-list 'default-frame-alist '(alpha 85 85))
-#+END_EXAMPLE
+ Using the DOOM look & feel. Transparency is deactivated because I'm running on WSL, so compositing is broken.  May tweak for native Linux later. 
 
 ** DOOM theme
 #+BEGIN_SRC emacs-lisp
@@ -617,6 +609,10 @@ Make M-Ret insert headings without blank lines
 (setq doom-themes-enable-bold t
       doom-themes-enable-italic t)
 (load-theme 'doom-one t)
+
+;; set transparency
+;; (set-frame-parameter (selected-frame) 'alpha '(85 85))
+;; (add-to-list 'default-frame-alist '(alpha 85 85))
 #+END_SRC
 
 ** Lisp Syntax Guidance

@@ -80,8 +80,7 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 ** Setup Package.el to work with MELPA
    My original config had a few extra things like "org" and melpa-stable.  They may be redundant...
    
-*TODO FIXME REACTIVATE*
-+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (require 'package)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
@@ -92,7 +91,7 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 (package-refresh-contents)
 ;; Package.el added an extra initialize to parent file!
 (package-initialize)
-+END_SRC
+#+END_SRC
 
 ** Use-Packaged
    Install use-package and enable ':enable t' globally. That cauases the package(s) within use-package to be installed automatically if not already present on the system. 
@@ -504,8 +503,16 @@ We'll be using org-temp becuase it's in-document.  However do note that the new 
 (use-package org-tempo
   :ensure nil) ;; don't try to install this, built-in
 
-(add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
-(add-to-list 'org-structure-template-alist '("cl" "#+BEGIN_SRC common-lisp\n?\n#+END_SRC"))
+(add-to-list 'org-structure-template-alist '("el" . "src elisp"))
+(add-to-list 'org-structure-template-alist '("cl" . "src common-lisp"))
+#+end_src
+
+We also want to specify which languages we will be using:
+
+#+begin_src emacs-lisp
+(org-babel-do-load-languages
+   'org-babel-load-languages
+   '((lisp . t)))
 #+end_src
 
 ** Source-Code Block Syntax Highlighting
@@ -516,6 +523,9 @@ We'll be using org-temp becuase it's in-document.  However do note that the new 
 org-src-tab-acts-natively t
 org-confirm-babel-evaluate nil
 org-edit-src-content-indentation 0)
+
+;; Highlight exported code-blocks
+(use-package htmlize)
 #+END_SRC
 
 ** Clean M-Ret Insertions

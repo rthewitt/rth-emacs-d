@@ -345,6 +345,7 @@ My Personal keybindings. I'll add DT's after I play with this
        "h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config")
        "m t"   '(org-todo :which-key "Org todo")
        "m z"   '(darkroom-tentative-mode :which-key "Darkroom (Tentative)")
+       "m h"   '(org-toggle-heading :which-key "Org toggle heading")
        "o a"   '(org-agenda :which-key "Org agenda")
        )
 #+END_SRC
@@ -662,6 +663,7 @@ Make M-Ret insert headings without blank lines
 #+BEGIN_SRC emacs-lisp
 (use-package darkroom)
 #+END_SRC
+
 * MISCELANEOUS, MISSING
 Items I've left off from the DT Config include:
 - Ivy

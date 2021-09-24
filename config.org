@@ -17,6 +17,7 @@
     -   [[Evil Mode]]
     -   [[Persistent Scratch]]
     -   [[General Keybindings]]
+    -   [[Major Mode Overrides]]
 -   [[START-UP PERFORMANCE]]
     -   [[Garbage Collection]]
     -   [[Native Compile]]
@@ -40,6 +41,7 @@
     -   [[Shift Focus to Help Window]]
 -   [[ORG MODE]]
     -   [[Defining Some Things]]
+    -   [[Org Babel Tangle output directory]]
     -   [[Setting the default browser]]
     -   [[Enabling Org Bullets]]
     -   [[Source-Code Block Tag Expansion]]
@@ -142,6 +144,14 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 :config
 (general-evil-setup t))
 #+END_SRC
+
+** Major Mode Overrides
+These are very specific to my config.  I am working with a file-type called .PRG that is a lisp derivative.
+This snippet will tell Emacs how to load the file
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.prg\\'" . lisp-mode))
+#+end_src
 
 * START-UP PERFORMANCE
   This section will make emacs load more quickly.
@@ -470,6 +480,23 @@ because the server starts in terminal!
       org-edit-src-content-indentation 0)
 #+END_SRC
 
+
+** Org Babel Tangle output directory
+Generating code with org-babel-tangle uses the current directory, or a relative direcotory.
+Unfortunately you cannot specify directories relative to an output location.
+Now you can!
+
+#+begin_src emacs-lisp
+(defun org-in-tangle-dir (sub-path)
+  "Expand the SUB-PATH into the directory given by the tangle-dir
+property if that property exists, else use the
+`default-directory'."
+  (expand-file-name sub-path
+                    (or
+                     (org-entry-get (point) "tangle-dir" 'inherit)
+                     (default-directory))))
+#+end_src
+
 ** Setting the default browser
 #+BEGIN_SRC emacs-lisp
 ;; The following didn't work eith an environment variable
@@ -504,8 +531,8 @@ We'll be using org-temp becuase it's in-document.  However do note that the new 
 (use-package org-tempo
   :ensure nil) ;; don't try to install this, built-in
 
-(add-to-list 'org-structure-template-alist '("el" . "src elisp"))
-(add-to-list 'org-structure-template-alist '("cl" . "src common-lisp"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("cl" . "src lisp"))
 #+end_src
 
 We also want to specify which languages we will be using:

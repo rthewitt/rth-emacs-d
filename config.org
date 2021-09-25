@@ -90,7 +90,8 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (setq package-enable-at-startup nil)
-(package-refresh-contents)
+;; This was super slow, I don't know if it's necessary to refresh every time
+;(package-refresh-contents)
 ;; Package.el added an extra initialize to parent file!
 (package-initialize)
 #+END_SRC

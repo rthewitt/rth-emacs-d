@@ -43,6 +43,7 @@
     -   [[Defining Some Things]]
     -   [[Org Babel Tangle output directory]]
     -   [[Setting the default browser]]
+    -   [[Multi-line Org Emphasis]]
     -   [[Enabling Org Bullets]]
     -   [[Source-Code Block Tag Expansion]]
     -   [[Source-Code Block Syntax Highlighting]]
@@ -126,6 +127,11 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 (evil-mode t)
 (evil-commentary-mode t)
 (global-evil-surround-mode t)
+
+(use-package symex
+  :config
+  (symex-initialize)
+  (global-set-key (kbd "C-c ;") 'symex-mode-interface))
 #+END_SRC
 
 ** Persistent Scratch 
@@ -516,8 +522,23 @@ property if that property exists, else use the
             browse-url-browser-function 'browse-url-generic)))
 #+END_SRC
 
+** Multi-line Org Emphasis
+I made a thing!
+
+#+begin_src emacs-lisp
+;; Surround multiple lines with desired character
+;; Designed for org-emphasis (bold, italics, etc.)
+(global-set-key (kbd "C-c s")
+  (lambda ()
+    (interactive)
+    (let* ((char (read-quoted-char "Surround with: "))
+	   ;; do not corrupt regex if char is slash
+           (str (if (= 47 char) "\\/" (char-to-string char))))
+      (evil-ex (concat "'<,'>s/^\\([^[:blank:]\\n\\r]+\\)$/" str "\\1" str "/")))))
+#+end_src
+
 ** Enabling Org Bullets
-  Better looking lists by replacing asterisks
+Better looking lists by replacing asterisks
   
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets)

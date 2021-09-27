@@ -472,7 +472,7 @@ because the server starts in terminal!
 ;; I need to customize agenda...
 ;; It's currently writing to my notes file
 (setq org-directory (expand-file-name "~/org/")
-      org-agenda-files '("~/org/agenda.org" "~/org/notes.org" "~/org/goals.org" "~/org/whitney-grant.org")
+      org-agenda-files '("~/org/agenda.org" "~/org/habits.org" "~/org/goals.org" "~/org/whitney-grant.org")
       org-default-notes-file (expand-file-name "notes.org" org-directory)
       org-agenda-hide-tags-regexp "work\\|pd\\|f1\\|personal"
       org-ellipsis " ▼ "

@@ -7,60 +7,6 @@
 #+OPTIONS: toc:2
 #+OPTIONS: num:nil ^:{}
 
-* TABLE OF CONTENTS :TOC:
--   [[IMPORTANT - THIS SNIPPET IS PLACED INIT.EL]]
--   [[ABOUT THIS CONFIG]]
--   [[A FEW PROGRAMS TO RUN FIRST]]
-    -   [[Setup Package.el to work with MELPA]]
-    -   [[Use-Packaged]]
-    -   [[Move auto-save files and backups]]
-    -   [[Evil Mode]]
-    -   [[Persistent Scratch]]
-    -   [[General Keybindings]]
-    -   [[Major Mode Overrides]]
--   [[START-UP PERFORMANCE]]
-    -   [[Garbage Collection]]
-    -   [[Native Compile]]
--   [[ALL-THE-ICONS]]
--   [[BUFFERS AND BOOKMARKS]]
--   [[EMACS DASHBOARD]]
--   [[FILES]]
--   [[FONTS]]
-    -   [[Use Greek Letters]]
-    -   [[Zooming In and Out]]
--   [[GENERAL KEYBINDINGS]]
--   [[ESC KEY REMAPPING]]
-    -   [[Old Version, Disabled]]
-    -   [[Working Version With Key-Chords]]
--   [[LANGUAGE SUPPORT]]
--   [[GRAPHICAL USER INTERFACE TWEAKS]]
-    -   [[Disable Menubar, Toolbars and Scrollbars]]
-    -   [[Disable Splash Screen]]
-    -   [[Display Line Numbers and Truncated Lines]]
-    -   [[Change Modeline To Doom's Modeline]]
-    -   [[Shift Focus to Help Window]]
--   [[ORG MODE]]
-    -   [[Defining Some Things]]
-    -   [[Org Babel Tangle output directory]]
-    -   [[Setting the default browser]]
-    -   [[Multi-line Org Emphasis]]
-    -   [[Enabling Org Bullets]]
-    -   [[Source-Code Block Tag Expansion]]
-    -   [[Source-Code Block Syntax Highlighting]]
-    -   [[Clean M-Ret Insertions]]
--   [[PROJECTILE]]
--   [[SCROLLING]]
--   [[SHELLS & REPLS]]
-    -   [[Eshell]]
-    -   [[SLIME]]
-    -   [[Tramp]]
--   [[THEME]]
-    -   [[DOOM theme]]
-    -   [[Lisp Syntax Guidance]]
--   [[RUNTIME PERFORMANCE]]
--   [[DARKROOM MODE]]
--   [[MISCELANEOUS, MISSING]]
-
 * IMPORTANT - THIS SNIPPET IS PLACED INIT.EL
   Also note this is an example snippet, not source-code!
 
@@ -128,10 +74,11 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 (evil-commentary-mode t)
 (global-evil-surround-mode t)
 
-(use-package symex
-  :config
-  (symex-initialize)
-  (global-set-key (kbd "C-c ;") 'symex-mode-interface))
+;; Not loving this default
+;(use-package symex
+;  :config
+;  (symex-initialize)
+;  (global-set-key (kbd "C-c ;") 'symex-mode-interface))
 #+END_SRC
 
 ** Persistent Scratch 
@@ -294,12 +241,12 @@ I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 
 
 ;; Needed if using emacsclient. Otherwise, your fonts will be smaller than expected.
 (add-to-list 'default-frame-alist '(font . "Source Code Pro-11"))
-;; changes certain keywords to symbols, such as lamda!
+;; changes certain keywords to symbols, such as lambda!
 (setq global-prettify-symbols-mode t)
 #+END_SRC
 
 ** Use Greek Letters
-   We can turn lambda into lamda!
+   We can turn lambda into lambda!
 
 #+BEGIN_SRC emacs-lisp
 (defconst
@@ -328,42 +275,23 @@ You can use the bindings CTRL plus =/- for zooming in/out.  You can also use CTR
 #+END_SRC
 
 * GENERAL KEYBINDINGS
-  The following may be very useful - especially if I want to migrate to or emulate DOOM. For now, the following are provided as an example only and are *NOT ACTIVE*.
 
-#+BEGIN_EXAMPLE
-(nvmap :keymaps 'override :prefix "SPC"
-       "SPC"   '(counsel-M-x :which-key "M-x")
-       "c c"   '(compile :which-key "Compile")
-       "c C"   '(recompile :which-key "Recompile")
-       "h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config")
-       "t t"   '(toggle-truncate-lines :which-key "Toggle truncate lines"))
-(nvmap :keymaps 'override :prefix "SPC"
-       "m *"   '(org-ctrl-c-star :which-key "Org-ctrl-c-star")
-       "m +"   '(org-ctrl-c-minus :which-key "Org-ctrl-c-minus")
-       "m ."   '(counsel-org-goto :which-key "Counsel org goto")
-       "m e"   '(org-export-dispatch :which-key "Org export dispatch")
-       "m f"   '(org-footnote-new :which-key "Org footnote new")
-       "m h"   '(org-toggle-heading :which-key "Org toggle heading")
-       "m i"   '(org-toggle-item :which-key "Org toggle item")
-       "m n"   '(org-store-link :which-key "Org store link")
-       "m o"   '(org-set-property :which-key "Org set property")
-       "m t"   '(org-todo :which-key "Org todo")
-       "m x"   '(org-toggle-checkbox :which-key "Org toggle checkbox")
-       "m B"   '(org-babel-tangle :which-key "Org babel tangle")
-       "m I"   '(org-toggle-inline-images :which-key "Org toggle inline imager")
-       "m T"   '(org-todo-list :which-key "Org todo list")
-       "o a"   '(org-agenda :which-key "Org agenda")
-       )
-#+END_EXAMPLE
+My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate later.
 
-My Personal keybindings. I'll add DT's after I play with this
 #+BEGIN_SRC emacs-lisp
 (nvmap :keymaps 'override :prefix "SPC"
        "h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config")
        "m t"   '(org-todo :which-key "Org todo")
        "m z"   '(darkroom-tentative-mode :which-key "Darkroom (Tentative)")
+       ;"m o"   '(org-set-property :which-key "Org set property") ; I don't like this binding
+       ;"m x"   '(org-toggle-checkbox :which-key "Org toggle checkbox") ; Activate when needed
+       ;"m n"   '(org-store-link :which-key "Org store link") ; Hmmmm
        "m h"   '(org-toggle-heading :which-key "Org toggle heading")
+       "m i"   '(org-toggle-item :which-key "Org toggle item")
+       "m B"   '(org-babel-tangle :which-key "Org babel tangle")
        "o a"   '(org-agenda :which-key "Org agenda")
+       "o e"   '(eshell :which-key "Open eshell")
+       "o h"   '((lambda () (interactive) (find-file "~/org/habits.org")) :which-key "My Org Habits")
        )
 #+END_SRC
   
@@ -371,9 +299,21 @@ My Personal keybindings. I'll add DT's after I play with this
   These are my original (pre-general) agenda keybindings. I don't really want this limited to org-mode.
 
 #+BEGIN_SRC emacs-lisp
-;; (with-eval-after-load 'org
-;;   (bind-key "C-c a" #'org-agenda org-mode-map))
-(global-set-key (kbd "C-c a") 'org-agenda)
+
+;; Hook just wasn't working, using eval-after-load...
+;; This overrides jump-to-date, which may be actually be useful
+;; Also convert date, which is cute but useless
+;; but redefines capture: k->C
+(eval-after-load "org-agenda"
+'(progn
+  (define-key org-agenda-mode-map (kbd "j") 'evil-next-line)
+  (define-key org-agenda-mode-map (kbd "k") 'evil-previous-line)
+  (define-key org-agenda-mode-map (kbd "C-w h") 'evil-window-left)
+  (define-key org-agenda-mode-map (kbd "C-w l") 'evil-window-right)
+  (define-key org-agenda-mode-map (kbd "C-w j") 'evil-window-down)
+  (define-key org-agenda-mode-map (kbd "C-w k") 'evil-window-up)
+  (define-key org-agenda-mode-map (kbd "C-w o") 'delete-other-windows)
+  (define-key org-agenda-mode-map (kbd "C") 'org-agenda-capture)))
 #+END_SRC
   
 * ESC KEY REMAPPING
@@ -469,8 +409,9 @@ because the server starts in terminal!
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'org-mode-hook 'org-indent-mode)
-;; I need to customize agenda...
+;; I need to customize capture
 ;; It's currently writing to my notes file
+;; I would like to use an inbox of some sort
 (setq org-directory (expand-file-name "~/org/")
       org-agenda-files '("~/org/agenda.org" "~/org/habits.org" "~/org/goals.org" "~/org/whitney-grant.org")
       org-default-notes-file (expand-file-name "notes.org" org-directory)
@@ -487,6 +428,12 @@ because the server starts in terminal!
       org-edit-src-content-indentation 0)
 #+END_SRC
 
+** Enable Habits
+This tracks habit consistency and modifies Org Agenda view
+
+#+begin_src emacs-lisp
+(add-to-list 'org-modules 'org-habit)
+#+end_src
 
 ** Org Babel Tangle output directory
 Generating code with org-babel-tangle uses the current directory, or a relative direcotory.

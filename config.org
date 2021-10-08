@@ -295,6 +295,8 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        ;"m n"   '(org-store-link :which-key "Org store link") ; Hmmmm
        "m h"   '(org-toggle-heading :which-key "Org toggle heading")
        "m i"   '(org-toggle-item :which-key "Org toggle item")
+       "m f"   '(org-narrow-to-subtree :which-key "Org focus")
+       "m b"   '(widen :which-key "Org focus back")
        "m B"   '(org-babel-tangle :which-key "Org babel tangle")
        "o a"   '(org-agenda :which-key "Org agenda")
        "o e"   '(eshell :which-key "Open eshell")

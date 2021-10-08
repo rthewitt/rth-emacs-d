@@ -590,8 +590,8 @@ Make M-Ret insert headings without blank lines
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :init
-  (when (file-directory-p "~/Projects/Code")
-    (setq projectile-project-search-path '("~/Projects/Code")))
+  (when (file-directory-p "~/source/repos")
+    (setq projectile-project-search-path '("~/source/repos")))
   (setq projectile-switch-project-action #'projectile-dired))
 ;(projectile-global-mode 1)) ;what is this?
 #+END_SRC

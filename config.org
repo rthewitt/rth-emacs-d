@@ -644,6 +644,28 @@ Make M-Ret insert headings without blank lines
 	       ))
 #+END_SRC
 
+* WHICH-KEY
+Whick key will jog your memory by displaying completions for commands.  I have memorized and customized enough at this point to where this is good rather than bad.
+
+*NOTE:* DT added these default tweaks to fix a bug in which the modeline can occlude the bottom row.
+
+#+begin_src emacs-lisp
+(use-package which-key
+  :init
+  (setq which-key-side-window-location 'bottom
+        which-key-sort-order #'which-key-key-order-alpha
+        which-key-sort-uppercase-first nil
+        which-key-add-column-padding 1
+        which-key-max-display-columns nil
+        which-key-min-display-lines 6
+        which-key-side-window-slot -10
+        which-key-side-window-max-height 0.25
+        which-key-idle-delay 0.8
+        which-key-max-description-length 25
+        which-key-allow-imprecise-window-fit t
+        which-key-separator " → " ))
+(which-key-mode)
+#+end_src
 * RUNTIME PERFORMANCE
   Dial the GC threshold back down so that garbage collection happens more frequently but in less time
   What does this even mean? Is this stateful? Did we change behavior just for config loading?

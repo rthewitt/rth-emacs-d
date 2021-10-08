@@ -304,7 +304,7 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        )
 #+END_SRC
   
-* AGENDA MODE KEYBINDINGS (OLD)
+* AGENDA MODE KEYBINDINGS
   These are my original (pre-general) agenda keybindings. I don't really want this limited to org-mode.
 
 #+BEGIN_SRC emacs-lisp
@@ -326,7 +326,7 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
 #+END_SRC
   
 * ESC KEY REMAPPING
-   I used this extensivel before getting an ergo-keyboard. I may wean myself off...
+I used this extensively before getting an ergo-keyboard. I may wean myself off...
 
 ** Old Version, Disabled
 #+BEGIN_EXAMPLE
@@ -451,8 +451,8 @@ To be honest I'm still unclear on how Counsel / Swiper differ and why they are n
 * ORG MODE  
   Org mode is wonderful but could use a few tweaks.
   
-** Defining Some Things
-   TODO: read up on these directives!
+** Preferences
+
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'org-mode-hook 'org-indent-mode)

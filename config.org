@@ -62,7 +62,7 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 #+END_SRC
 
 ** Evil Mode
-   Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides facilities for writing custom extensions.  (I did not know that!) Evil Collection is also installed since it adds 'evil' bindings to parts of Emacs that the standard Evil package does not cover, such as: calendar, help-mode and ibuffer (??)
+Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides facilities for writing custom extensions.  (I did not know that!) Evil Collection is also installed since it adds 'evil' bindings to parts of Emacs that the standard Evil package does not cover, such as: calendar, help-mode and ibuffer (??)
 
 #+BEGIN_SRC emacs-lisp
 (setq evil-toggle-key "C-;")
@@ -73,7 +73,12 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 (evil-mode t)
 (evil-commentary-mode t)
 (global-evil-surround-mode t)
+#+END_SRC
 
+** +Symex+
+This is a ~paredit~ competitor that uses structured editing.  Great idea, but I just could not get used to it - and why in the /world/ was it global?
+
+#+BEGIN_SRC emacs-lisp
 ;; Not loving this default
 ;(use-package symex
 ;  :config
@@ -82,7 +87,9 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 #+END_SRC
 
 ** Persistent Scratch 
-   We want to save our notes between sessions
+We want to save our notes between sessions.  This will do it *sometimes*.  Note that a corruption here will cause you to lose quite a lot.  Don't rely on this for project work. 
+
+Erm... Well maybe just uncomment the autosave?  Because I lost 10 days worth of notes and thought I had that active...
 
 #+BEGIN_SRC emacs-lisp
 ;(require 'persistent-scratch)
@@ -98,14 +105,6 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 :config
 (general-evil-setup t))
 #+END_SRC
-
-** Major Mode Overrides
-These are very specific to my config.  I am working with a file-type called .PRG that is a lisp derivative.
-This snippet will tell Emacs how to load the file
-
-#+begin_src emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.prg\\'" . lisp-mode))
-#+end_src
 
 * START-UP PERFORMANCE
   This section will make emacs load more quickly.
@@ -157,7 +156,7 @@ This snippet will tell Emacs how to load the file
 * BUFFERS AND BOOKMARKS
   These appear to be useful for DT. I do not use buffer commands extensively in Emacs yet, preferring C-x o.  I expect to change my behavior but for now the following block is NOT ACTIVE!
 
-#+BEGIN_EXAMPLE
+  #+begin_src emacs-lisp
  (nvmap :prefix "SPC"
        "b b"   '(ibuffer :which-key "Ibuffer")
        "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
@@ -166,8 +165,16 @@ This snippet will tell Emacs how to load the file
        "b p"   '(previous-buffer :which-key "Previous buffer")
        "b B"   '(ibuffer-list-buffers :which-key "Ibuffer list buffers")
        "b K"   '(kill-buffer :which-key "Kill buffer"))
-#+END_EXAMPLE
+  #+end_src
   
+* CUSTOM MAJOR MODE
+These are very specific to my config.  I am working with a file-type called .PRG that is a lisp derivative.
+This snippet will tell Emacs how to load the file
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.prg\\'" . lisp-mode))
+#+end_src
+
 * EMACS DASHBOARD
   Dashboard looks very interesting and may streamline my process, but I don't want it yet.
 
@@ -197,20 +204,20 @@ I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 
 * FILES
   DT has some really useful file-handling functions in his config. I think I will use these once I get used to leader keys. I don't want to accidentally affect files so the following block is *NOT ACTIVE*
 
-#+BEGIN_EXAMPLE
+#+begin_src emacs-lisp
 (nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
-       "."     '(find-file :which-key "Find file")
+       "."     '(find-file :which-key "Find file") ; ok, this is actually nice
        "f f"   '(find-file :which-key "Find file")
        "f r"   '(counsel-recentf :which-key "Recent files")
        "f s"   '(save-buffer :which-key "Save file")
        "f u"   '(sudo-edit-find-file :which-key "Sudo find file")
-       "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path")
+       ;; "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path") ; I want this!
        "f C"   '(copy-file :which-key "Copy file")
-       "f D"   '(delete-file :which-key "Delete file")
-       "f R"   '(rename-file :which-key "Rename file")
-       "f S"   '(write-file :which-key "Save file as...")
+       ;"f D"   '(delete-file :which-key "Delete file") ; Too dangerous for my taste
+       ;"f R"   '(rename-file :which-key "Rename file") ; use a daggum shell
+       ;"f S"   '(write-file :which-key "Save file as...") ; why not just :w <name>? 
        "f U"   '(sudo-edit :which-key "Sudo edit file"))
-#+END_EXAMPLE
+#+end_src
 
 * FONTS
   DT is using SourceCodePro from nerf-fonts. The following snippet does not support italics or other variations. This is strange, and may be specific to AUR/Arch Linux.  I will be installing from WSL on my Windows box.
@@ -292,6 +299,8 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        "o a"   '(org-agenda :which-key "Org agenda")
        "o e"   '(eshell :which-key "Open eshell")
        "o h"   '((lambda () (interactive) (find-file "~/org/habits.org")) :which-key "My Org Habits")
+
+       ;"p c"   '(projectile-command-map :which-key "Projectile Commands") ; Doom also uses C-c p, but I don't have the menu...
        )
 #+END_SRC
   
@@ -400,6 +409,44 @@ because the server starts in terminal!
 #+BEGIN_SRC emacs-lisp
 (setq help-window-select t)
 #+END_SRC
+
+* IVY (COUNSEL/SWIPER)
+
+I waited a while to install this, but I am sick and tired of the crappy autocomplete minibuffer.  I'm hoping that Ivy will be better, and if it's too limited I will move to [[https://emacs-helm.github.io/helm/][Helm]].
+
+To be honest I'm still unclear on how Counsel / Swiper differ and why they are needed at all for Ivy.
+
+#+begin_src emacs-lisp
+(use-package counsel
+  :after ivy
+  :config (counsel-mode))
+(use-package ivy
+  :defer 0.1
+  :diminish
+  :bind
+  (("C-c C-r" . ivy-resume)
+   ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (setq ivy-count-format "(%d/%d) ")
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  :config
+  (ivy-mode))
+(use-package ivy-rich
+  :after ivy
+  :custom
+  (ivy-virtual-abbreviate 'full
+   ivy-rich-switch-buffer-align-virtual-buffer t
+   ivy-rich-path-style 'abbrev)
+  :config
+  (ivy-set-display-transformer 'ivy-switch-buffer
+                               'ivy-rich-switch-buffer-transformer)
+  (ivy-rich-mode 1)) ;; this gets us descriptions in M-x.
+(use-package swiper
+  :after ivy
+  :bind (("C-s" . swiper)
+         ("C-r" . swiper)))
+#+end_src
 
 * ORG MODE  
   Org mode is wonderful but could use a few tweaks.
@@ -538,9 +585,38 @@ Make M-Ret insert headings without blank lines
   
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
-:config
-(projectile-global-mode 1))
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/Projects/Code")
+    (setq projectile-project-search-path '("~/Projects/Code")))
+  (setq projectile-switch-project-action #'projectile-dired))
+;(projectile-global-mode 1)) ;what is this?
 #+END_SRC
+
+
+** TODO Understand exactly what this does before integrating it.
+From [[https://www.youtube.com/watch?v=INTu30BHZGk&list=WL&index=96&t=532s][System Crafter's Video]]
+
+#+begin_src emacs-lisp
+;; (use-package counsel-projectile
+;;   :config (counsel-projectile-mode))
+#+end_src
+
+* MAGIT
+Porcelain for Git - this hurts my pride a little but I sure do like the integration and granularity at the hunk level.
+
+#+begin_src emacs-lisp
+(use-package magit
+  :commands (magit-status magit-get-current-branch)
+  ;; This is to display diff in the same windowy
+  ;; Using the default for now
+  ;:custom
+  ;(magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+)
+#+end_src
 
 * SCROLLING
   Emacs's default scrolling is annoying because of the sudden half-page jumps. Speed adjustments included.
@@ -684,16 +760,11 @@ Whick key will jog your memory by displaying completions for commands.  I have m
 
 * MISCELANEOUS, MISSING
 Items I've left off from the DT Config include:
-- Ivy
-- Magit
 - Neotree
 - Emojis
 - Org Link Abbreviations (??)
 - Org TODO keywords
 - Perspectives - Emacs buffer groups
 - Emacs Registers - How do these differ from evil-mode :reg?
-- Shell colors (requires DT git repos)
-- Window control and key bindings
-- Which-key (still don't undestand how this differs from default tab-completion)
  
 

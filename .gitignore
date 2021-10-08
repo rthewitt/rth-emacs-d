@@ -14,6 +14,10 @@ org-html-themes/
 .persistent-scratch
 .\#*
 
+# This showed up after installing... lots of things
+# Magit, Projectile, Which-key, Ivy...
+transient/
+
 # do I really want to ignore these things?
 projectile-bookmarks.eld
 

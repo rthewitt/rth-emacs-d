@@ -684,7 +684,13 @@ Porcelain for Git - this hurts my pride a little but I sure do like the integrat
             (define-key eshell-mode-map (kbd "C-u") 'eshell-kill-input)))
 #+END_SRC
 
+** VTerm
 
+VTerm is a full terminal emulator, using external compiled C code.  Unlike Eshell, Term, etc, it can handle just about anything a terminal can.
+
+#+begin_src emacs-lisp
+(use-package vterm)
+#+end_src
 ** SLIME
    SLIME allows for interactive Common-Lisp evaluation. Make it more bash-like with shortcuts
 

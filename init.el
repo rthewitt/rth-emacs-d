@@ -15,4 +15,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(which-key evil-magit command-log-mode ivy-rich symex htmlize org-tempo use-package undo-tree projectile persistent-scratch org-bullets mixed-pitch markdown-mode lua-mode key-chord haskell-mode gnu-elpa-keyring-update general gcmh evil-surround evil-escape evil-commentary doom-themes doom-modeline darkroom company)))
+   '(vterm which-key evil-magit command-log-mode ivy-rich symex htmlize org-tempo use-package undo-tree projectile persistent-scratch org-bullets mixed-pitch markdown-mode lua-mode key-chord haskell-mode gnu-elpa-keyring-update general gcmh evil-surround evil-escape evil-commentary doom-themes doom-modeline darkroom company)))

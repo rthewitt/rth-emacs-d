@@ -38,7 +38,7 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
 (setq package-enable-at-startup nil)
 ;; This was super slow, I don't know if it's necessary to refresh every time
-;(package-refresh-contents)
+;(package-refresh-contents) ; Uncomment for first run at least
 ;; Package.el added an extra initialize to parent file!
 (package-initialize)
 #+END_SRC
@@ -50,6 +50,10 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 (setq use-package-always-ensure t)
+
+;; install from scratch
+(eval-when-compile
+  (require 'use-package))
 #+END_SRC
 
 ** Move auto-save files and backups

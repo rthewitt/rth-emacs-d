@@ -48,7 +48,7 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
    
 #+BEGIN_SRC emacs-lisp
 (unless (package-installed-p 'use-package)
-(package-install 'use-package))
+  (package-install 'use-package))
 (setq use-package-always-ensure t)
 #+END_SRC
 
@@ -65,14 +65,29 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides facilities for writing custom extensions.  (I did not know that!) Evil Collection is also installed since it adds 'evil' bindings to parts of Emacs that the standard Evil package does not cover, such as: calendar, help-mode and ibuffer (??)
 
 #+BEGIN_SRC emacs-lisp
-(setq evil-toggle-key "C-;")
-(require 'evil)
-(require 'evil-commentary)
-(require 'evil-surround)
-; (setq evil-default-state 'emacs)
-(evil-mode t)
-(evil-commentary-mode t)
-(global-evil-surround-mode t)
+(use-package evil
+  :init      ;; tweak evil's configuration before loading it
+  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-keybinding nil)
+  (setq evil-vsplit-window-right t)
+  (setq evil-split-window-below t)
+  (evil-mode))
+(use-package evil-collection
+  :after evil
+  :config
+  (setq evil-toggle-key "C-;")
+  (setq evil-collection-mode-list '(dashboard dired ibuffer))
+  (evil-collection-init))
+
+(use-package evil-commentary
+  :after evil
+  :config
+  (setq evil-commentary-mode t))
+
+(use-package evil-surround
+  :after evil
+  :config
+  (global-evil-surround-mode t))
 #+END_SRC
 
 ** +Symex+

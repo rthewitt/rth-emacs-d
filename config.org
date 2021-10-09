@@ -104,6 +104,16 @@ This is a ~paredit~ competitor that uses structured editing.  Great idea, but I 
 ;  (symex-initialize)
 ;  (global-set-key (kbd "C-c ;") 'symex-mode-interface))
 #+END_SRC
+ 
+** Undo Tree
+
+Visual representation of changes, very useful when fat-fingering
+
+#+begin_src emacs-lisp
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
+#+end_src
 
 ** Persistent Scratch 
 We want to save our notes between sessions.  This will do it *sometimes*.  Note that a corruption here will cause you to lose quite a lot.  Don't rely on this for project work. 
@@ -111,10 +121,10 @@ We want to save our notes between sessions.  This will do it *sometimes*.  Note 
 Erm... Well maybe just uncomment the autosave?  Because I lost 10 days worth of notes and thought I had that active...
 
 #+BEGIN_SRC emacs-lisp
-;(require 'persistent-scratch)
-(global-undo-tree-mode) 
-(persistent-scratch-setup-default) ; save & autoload last
-;(persistent-scratch-autosave-mode 1) 
+(use-package persistent-scratch
+  :config
+  (persistent-scratch-setup-default) ; save & autoload last
+  (persistent-scratch-autosave-mode 1))
 #+END_SRC
 ** General Keybindings
    General.el allows us to set keybindings. The default Emacs methods of setting keybindings are ugly and seemingly inconsistent. In addition to porting my existing bindings, I may experiment with leader keys.  Doom Emacs uses the SPC key as a prefix to most commands.  This may be better on my fingers.

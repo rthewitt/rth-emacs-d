@@ -370,9 +370,12 @@ I used this extensively before getting an ergo-keyboard. I may wean myself off..
 
 ** Working Version With Key-Chords
 #+BEGIN_SRC emacs-lisp
-(require 'key-chord)
-(key-chord-mode 1)
-(key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)
+(use-package key-chord
+  :after evil
+  :config
+  (key-chord-mode 1)
+  (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state))
+
 #+END_SRC
    
 * LANGUAGE SUPPORT

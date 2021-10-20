@@ -18,6 +18,10 @@ org-html-themes/
 # Magit, Projectile, Which-key, Ivy...
 transient/
 
+# Ignore history and state for eshell
+# keeping aliases woudl be nice...
+eshell/
+
 # do I really want to ignore these things?
 projectile-bookmarks.eld
 

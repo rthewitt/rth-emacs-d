@@ -689,7 +689,9 @@ Porcelain for Git - this hurts my pride a little but I sure do like the integrat
 VTerm is a full terminal emulator, using external compiled C code.  Unlike Eshell, Term, etc, it can handle just about anything a terminal can.
 
 #+begin_src emacs-lisp
-(use-package vterm)
+(use-package vterm 
+  :load-path "/opt/emacs-libvterm/"
+)
 #+end_src
 ** SLIME
    SLIME allows for interactive Common-Lisp evaluation. Make it more bash-like with shortcuts

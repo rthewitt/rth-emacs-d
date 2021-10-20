@@ -374,7 +374,8 @@ I used this extensively before getting an ergo-keyboard. I may wean myself off..
   :after evil
   :config
   (key-chord-mode 1)
-  (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state))
+  (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)
+  (key-chord-define evil-replace-state-map  "jk" 'evil-normal-state))
 
 #+END_SRC
    

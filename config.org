@@ -196,12 +196,44 @@ Erm... Well maybe just uncomment the autosave?  Because I lost 10 days worth of 
        "b K"   '(kill-buffer :which-key "Kill buffer"))
   #+end_src
   
-* CUSTOM MAJOR MODE
+* CUSTOM MODES
+** Major Modes
 These are very specific to my config.  I am working with a file-type called .PRG that is a lisp derivative.
 This snippet will tell Emacs how to load the file
 
 #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.prg\\'" . lisp-mode))
+#+end_src
+
+** Minor Modes
+#+begin_src emacs-lisp
+
+;; to better edit 80-char style code
+;; Not as intense as darkroom / zen
+(defvar bzg-big-fringe-mode nil)
+(define-minor-mode bzg-big-fringe-mode
+  "Minor mode to use big fringe in the current buffer"
+  :init-value nil
+  :global nil
+  :variable bzg-big-fringe-mode
+  :group 'editing-basics
+  (if (not bzg-big-fringe-mode)
+      (set-fringe-style nil)
+    (set-fringe-mode
+     (/ (- (frame-pixel-width)
+           (* 80 (frame-char-width)))
+        2))))
+
+;; activate...
+;(bzg-big-fringe-mode 1)
+
+(add-hook 'window-configuration-change-hook
+          (lambda ()
+            (if (delq nil
+                      (let ((fw (frame-width)))
+                        (mapcar (lambda(w) (< (window-width w) (/ fw 2)))
+                                (window-list))))
+            (bzg-big-fringe-mode 0))))
 #+end_src
 
 * EMACS DASHBOARD

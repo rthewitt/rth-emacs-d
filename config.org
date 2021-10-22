@@ -342,8 +342,7 @@ You can use the bindings CTRL plus =/- for zooming in/out.  You can also use CTR
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 #+END_SRC
 
-* GENERAL KEYBINDINGS
-
+* GENERAL KEBINDINGS
 My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate later.
 
 #+BEGIN_SRC emacs-lisp
@@ -353,17 +352,20 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        "m z"   '(darkroom-tentative-mode :which-key "Darkroom (Tentative)")
        ;"m o"   '(org-set-property :which-key "Org set property") ; I don't like this binding
        ;"m x"   '(org-toggle-checkbox :which-key "Org toggle checkbox") ; Activate when needed
-       ;"m n"   '(org-store-link :which-key "Org store link") ; Hmmmm
+       "y l"   '(org-store-link :which-key "Org store link") ; store a link, for use with insert/open/etc
        "m h"   '(org-toggle-heading :which-key "Org toggle heading")
        "m i"   '(org-toggle-item :which-key "Org toggle item")
        "m f"   '(org-narrow-to-subtree :which-key "Org focus")
-       "m b"   '(widen :which-key "Org focus back")
+       "m b"   '(widen :which-key "Org focus back") ; todo write function that toggles instead
        "m B"   '(org-babel-tangle :which-key "Org babel tangle")
        "o a"   '(org-agenda :which-key "Org agenda")
        "o e"   '(eshell :which-key "Open eshell")
        "o h"   '((lambda () (interactive) (find-file "~/org/habits.org")) :which-key "My Org Habits")
-
-       ;"p c"   '(projectile-command-map :which-key "Projectile Commands") ; Doom also uses C-c p, but I don't have the menu...
+       "o c"   '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :which-key "Emacs Config")
+       "o d"   '((lambda () (interactive) (find-file "~/org/agenda.org")) :which-key "Daily Habits (Agenda)") ; "daily" is awkward
+       "p p"   '(projectile-switch-project :which-key "Projectile Switch Project")
+       "p f"   '(projectile-find-file :which-key "Projectile Find File")
+       "p k"   '(projectile-kill-buffers :which-key "Projectile Kill Buffers")
        )
 #+END_SRC
   

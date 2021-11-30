@@ -239,9 +239,6 @@ This snippet will tell Emacs how to load the file
 * EMACS DASHBOARD
   Dashboard looks very interesting and may streamline my process, but I don't want it yet.
 
-* EVALUATE ELISP EXPRESSIONS
-I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eww' keybindings).
-
 * EVALUATE E(LISP) EXPRESSIONS
   I have to admit this is pretty cool. I cannot seem to remember the evaluate bindings.
 
@@ -260,6 +257,31 @@ I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 
        "e e"   '(eval-expression :which-key "Eval elisp expression")
        "e l"   '(eval-last-sexp :which-key "Eval last sexression")
        "e r"   '(eval-region :which-key "Eval region"))
+#+END_SRC
+
+* EVALUATE SLIME (COMMON-LISP) EXPRESSIONS
+  I have to admit this is pretty cool. I cannot seem to remember the evaluate bindings.
+
+| COMMAND         | DESCRIPTION                                       | KEYBINDING |
+|-----------------+---------------------------------------------------+------------|
+| eval-buffer     | TODO /Evaluate lisp in buffer/                      | SPC s b    |
+| eval-defun      | TODO /Evaluate the defun containing or after point/ | SPC s d    |
+| eval-expression | TODO /Evaluate an lisp expression/                  | SPC s e    |
+| eval-last-sexp  | /Evaluate lisp expression before point/             | SPC s l    |
+| eval-region     | TODO /Evaluate lisp in region/                      | SPC s r    |
+
+#+BEGIN_SRC emacs-lisp
+;; TODO map commented lines to correct functions
+(nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
+       "s s"   '(slime :which-key "Start SLIME session")
+       "s x"   '(slime-restart-inferior-lisp :which-key "Restart SLIME session")
+       "s b"   '(slime-eval-buffer :which-key "Eval buffer in SLIME")
+       "s p"   '(slime-sync-package-and-default-directory :which-key "Sync SLIME package, directory")
+       ;"s d"   '(eval-defun :which-key "Eval defun")
+       ;"s e"   '(eval-expression :which-key "Eval elisp expression")
+       "s l"   '(slime-eval-last-expression :which-key "Eval last s-exp")
+       ;"s r"   '(eval-region :which-key "Eval region"))
+)
 #+END_SRC
 
 * FILES

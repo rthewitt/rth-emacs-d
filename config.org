@@ -196,6 +196,15 @@ Erm... Well maybe just uncomment the autosave?  Because I lost 10 days worth of 
        "b K"   '(kill-buffer :which-key "Kill buffer"))
   #+end_src
   
+This may be useful to avoid spurious buffer creation, but the package contains much more
+than this.  Also, I'll need to investigate the source as it is a Wiki-only package.
+
+  #+begin_src emacs-lisp
+  ;; (use-package dired+
+  ;;   :init
+  ;;   (diredp-toggle-find-file-reuse-dir 1))
+  #+end_src
+  
 * CUSTOM MODES
 ** Major Modes
 These are very specific to my config.  I am working with a file-type called .PRG that is a lisp derivative.
@@ -551,7 +560,7 @@ To be honest I'm still unclear on how Counsel / Swiper differ and why they are n
 ;; It's currently writing to my notes file
 ;; I would like to use an inbox of some sort
 (setq org-directory (expand-file-name "~/org/")
-      org-agenda-files '("~/org/agenda.org" "~/org/habits.org" "~/org/goals.org" "~/org/whitney-grant.org")
+      org-agenda-files '("~/org/agenda.org" "~/org/habits.org" "~/org/goals.org")
       org-default-notes-file (expand-file-name "notes.org" org-directory)
       org-agenda-hide-tags-regexp "work\\|pd\\|f1\\|personal"
       org-ellipsis " ▼ "

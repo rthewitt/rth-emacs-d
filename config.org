@@ -186,7 +186,7 @@ Erm... Well maybe just uncomment the autosave?  Because I lost 10 days worth of 
   These appear to be useful for DT. I do not use buffer commands extensively in Emacs yet, preferring C-x o.  I expect to change my behavior but for now the following block is NOT ACTIVE!
 
   #+begin_src emacs-lisp
- (nvmap :prefix "SPC"
+ (nvmap :keymaps 'override :prefix "SPC"
        "b b"   '(ibuffer :which-key "Ibuffer")
        "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
        "b k"   '(kill-current-buffer :which-key "Kill current buffer")

@@ -16,4 +16,4 @@
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/org/agenda.org" "~/org/habits.org" "~/org/goals.org"))
  '(package-selected-packages
-   '(dap-mode lsp-mode evil-collection vterm which-key evil-magit command-log-mode ivy-rich symex htmlize org-tempo use-package undo-tree projectile persistent-scratch org-bullets mixed-pitch markdown-mode lua-mode key-chord haskell-mode gnu-elpa-keyring-update general gcmh evil-surround evil-escape evil-commentary doom-themes doom-modeline darkroom company)))
+   '(windresize cider clojure-mode dap-mode lsp-mode evil-collection vterm which-key evil-magit command-log-mode ivy-rich symex htmlize org-tempo use-package undo-tree projectile persistent-scratch org-bullets mixed-pitch markdown-mode lua-mode key-chord haskell-mode gnu-elpa-keyring-update general gcmh evil-surround evil-escape evil-commentary doom-themes doom-modeline darkroom company)))

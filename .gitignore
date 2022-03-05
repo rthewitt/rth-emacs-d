@@ -14,6 +14,13 @@ org-html-themes/
 .persistent-scratch
 .\#*
 
+# SQLite database for org-roam
+# it should be rebuilt from the note files
+org-roam.db
+
+# This appeared recently, seems like a history file
+recentf
+
 # This showed up after installing... lots of things
 # Magit, Projectile, Which-key, Ivy...
 transient/
@@ -24,6 +31,7 @@ eshell/
 
 # do I really want to ignore these things?
 projectile-bookmarks.eld
+projectile.cache
 
 # config.el is generated
 config.el

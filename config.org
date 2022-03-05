@@ -31,12 +31,15 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
    
 #+BEGIN_SRC emacs-lisp
 (require 'package)
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("nongnu" . "http://elpa.nongnu.org/nongnu/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (setq package-enable-at-startup nil)
+
 ;; This was super slow, I don't know if it's necessary to refresh every time
 ;(package-refresh-contents) ; Uncomment for first run at least
 ;; Package.el added an extra initialize to parent file!
@@ -73,6 +76,7 @@ Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides
   :init      ;; tweak evil's configuration before loading it
   (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
   (setq evil-want-keybinding nil)
+  (setq evil-want-C-i-jump nil)
   (setq evil-vsplit-window-right t)
   (setq evil-split-window-below t)
   (evil-mode))
@@ -398,6 +402,7 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        "p p"   '(projectile-switch-project :which-key "Projectile Switch Project")
        "p f"   '(projectile-find-file :which-key "Projectile Find File")
        "p k"   '(projectile-kill-buffers :which-key "Projectile Kill Buffers")
+       "w r"   '(windresize :which-key "Resize Windows")
        )
 #+END_SRC
   
@@ -695,6 +700,18 @@ Make M-Ret insert headings without blank lines
 (setq org-blank-before-new-entry (quote ((heading . nil)
 (plain-list-item . nil))))
 #+END_SRC
+
+** Org Roam
+#+begin_src emacs-lisp
+(use-package org-roam
+  :custom
+  (org-roam-directory "~/metacog")
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert))
+  :config
+  (org-roam-setup))
+#+end_src
 
 * PROJECTILE
   Adds the concept of projects to Emacs.  See https://www.emacswiki.org/emacs/Projectile

@@ -113,10 +113,24 @@ This is a ~paredit~ competitor that uses structured editing.  Great idea, but I 
 
 Visual representation of changes, very useful when fat-fingering
 
+Resize hook borrowed from [[https://stackoverflow.com/questions/68230947/how-to-resize-the-undo-tree-visualizer-window][StackOverflow]]
+
 #+begin_src emacs-lisp
 (use-package undo-tree
   :config
   (global-undo-tree-mode))
+
+; (defun undo-tree-hook ()
+;   "Hook to make the undo-tree-visualizer window to automatically resize to become smaller"
+;   (interactive)
+;   (unless (not (get-buffer-window " *undo-tree*"))
+;     (save-excursion
+;             (select-window (get-buffer-window " *undo-tree*"))
+;             ;(evil-window-set-width 45)
+; 	    )))
+
+; (add-hook 'undo-tree-visualizer-mode-hook 'undo-tree-hook)
+
 #+end_src
 
 ** Persistent Scratch 
@@ -403,6 +417,7 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        "p f"   '(projectile-find-file :which-key "Projectile Find File")
        "p k"   '(projectile-kill-buffers :which-key "Projectile Kill Buffers")
        "w r"   '(windresize :which-key "Resize Windows")
+       "/"     'swiper
        )
 #+END_SRC
   
@@ -522,6 +537,16 @@ because the server starts in terminal!
 (setq help-window-select t)
 #+END_SRC
 
+* AVY
+Avy movements are like Vimium / EasyMotion.  It has evil-integration /but/ I'm not ready yet.
+Walk before you can run.
+
+#+begin_src emacs-lisp
+(use-package avy
+  :after evil
+  :bind ("C-s" . 'avy-goto-char-timer))
+#+end_src
+
 * IVY (COUNSEL/SWIPER)
 
 I waited a while to install this, but I am sick and tired of the crappy autocomplete minibuffer.  I'm hoping that Ivy will be better, and if it's too limited I will move to [[https://emacs-helm.github.io/helm/][Helm]].
@@ -539,25 +564,27 @@ To be honest I'm still unclear on how Counsel / Swiper differ and why they are n
   (("C-c C-r" . ivy-resume)
    ("C-x B" . ivy-switch-buffer-other-window))
   :custom
-  (setq ivy-count-format "(%d/%d) ")
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
+  (ivy-count-format "(%d/%d) ")
+  (ivy-use-virtual-buffers t)
+  (ivy-use-selectable-prompt t)
+  (enable-recursive-minibuffers t)
   :config
   (ivy-mode))
 (use-package ivy-rich
   :after ivy
   :custom
-  (ivy-virtual-abbreviate 'full
-   ivy-rich-switch-buffer-align-virtual-buffer t
-   ivy-rich-path-style 'abbrev)
+  (ivy-virtual-abbreviate 'full)
+  (ivy-rich-switch-buffer-align-virtual-buffer t)
+  (ivy-rich-path-style 'abbrev)
   :config
   (ivy-set-display-transformer 'ivy-switch-buffer
                                'ivy-rich-switch-buffer-transformer)
   (ivy-rich-mode 1)) ;; this gets us descriptions in M-x.
+
+;; removed C-s binding in favor of leader key
+;; This way I can use avy for convenient navigation
 (use-package swiper
-  :after ivy
-  :bind (("C-s" . swiper)
-         ("C-r" . swiper)))
+  :after ivy)
 #+end_src
 
 * ORG MODE  
@@ -706,10 +733,14 @@ Make M-Ret insert headings without blank lines
 (use-package org-roam
   :custom
   (org-roam-directory "~/metacog")
+  (org-roam-dailies-directory "journal/")
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
          ("C-c n i" . org-roam-node-insert))
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
   :config
+  (require 'org-roam-dailies)
   (org-roam-setup))
 #+end_src
 
@@ -725,10 +756,21 @@ Make M-Ret insert headings without blank lines
   :init
   (when (file-directory-p "~/source/repos")
     (setq projectile-project-search-path '("~/source/repos")))
+  (when (file-directory-p "~/metacog")
+      (setq projectile-project-search-path (append
+                                            projectile-project-search-path
+                                            '("~/metacog"))))
   (setq projectile-switch-project-action #'projectile-dired))
-;(projectile-global-mode 1)) ;what is this?
+					;(projectile-global-mode 1)) ;what is this?
 #+END_SRC
 
+** Winner-Mode
+
+I realize this isn't the /best/ place for this, but this is where I have the most trouble.  My beautiful perspectives get messed up by ~undo-tree~ or ~org-agenda~.  This is a separate undo manager for window configurations.  To go back, use ~C-c left~
+
+#+begin_src emacs-lisp
+(winner-mode 1)
+#+end_src
 
 ** TODO Understand exactly what this does before integrating it.
 From [[https://www.youtube.com/watch?v=INTu30BHZGk&list=WL&index=96&t=532s][System Crafter's Video]]
@@ -738,6 +780,17 @@ From [[https://www.youtube.com/watch?v=INTu30BHZGk&list=WL&index=96&t=532s][Syst
 ;;   :config (counsel-projectile-mode))
 #+end_src
 
+* PERSPECTIVE
+Perspective.el lets you manage groups of buffers and window layouts.  Supports save/restore
+
+#+begin_src emacs-lisp
+(use-package perspective
+  :bind (("C-x b" . persp-switch-to-buffer*)
+         ("C-x k" . persp-kill-buffer*))
+  :init
+  (persp-mode)
+  (setq persp-state-default-file "~/.emacs.d/saved-perspectives"))
+#+end_src
 * MAGIT
 Porcelain for Git - this hurts my pride a little but I sure do like the integration and granularity at the hunk level.
 

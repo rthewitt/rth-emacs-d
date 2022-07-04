@@ -261,6 +261,8 @@ This snippet will tell Emacs how to load the file
                         (mapcar (lambda(w) (< (window-width w) (/ fw 2)))
                                 (window-list))))
             (bzg-big-fringe-mode 0))))
+
+(show-paren-mode)
 #+end_src
 
 * EMACS DASHBOARD
@@ -417,6 +419,7 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        "p f"   '(projectile-find-file :which-key "Projectile Find File")
        "p k"   '(projectile-kill-buffers :which-key "Projectile Kill Buffers")
        "w r"   '(windresize :which-key "Resize Windows")
+       "c"     'org-capture
        "/"     'swiper
        )
 #+END_SRC
@@ -613,6 +616,15 @@ To be honest I'm still unclear on how Counsel / Swiper differ and why they are n
       org-src-tab-acts-natively t
       org-edit-src-content-indentation 0)
 #+END_SRC
+
+
+** Capture Template for Triage (GTD)
+
+#+begin_src emacs-lisp
+(setq org-capture-templates
+      '(("t" "Triage" entry (file+headline "~/org/agenda.org" "Triage")
+         "** %?\n"))) 
+#+end_src
 
 ** Enable Habits
 This tracks habit consistency and modifies Org Agenda view

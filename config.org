@@ -323,6 +323,7 @@ This snippet will tell Emacs how to load the file
        "f r"   '(counsel-recentf :which-key "Recent files")
        "f s"   '(save-buffer :which-key "Save file")
        "f u"   '(sudo-edit-find-file :which-key "Sudo find file")
+       "f g"   '(counsel-rg :which-key "Find file using rg")
        ;; "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path") ; I want this!
        "f C"   '(copy-file :which-key "Copy file")
        ;"f D"   '(delete-file :which-key "Delete file") ; Too dangerous for my taste
@@ -748,12 +749,21 @@ Make M-Ret insert headings without blank lines
   (org-roam-dailies-directory "journal/")
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert))
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n s" . org-roam-rg-search))
   :bind-keymap
   ("C-c n d" . org-roam-dailies-map)
   :config
   (require 'org-roam-dailies)
   (org-roam-setup))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun org-roam-rg-search ()  
+"Search org-roam directory using consult-ripgrep. With live-preview."  
+(interactive)  
+(require 'org-roam)
+(counsel-rg nil org-roam-directory nil nil))
 #+end_src
 
 * PROJECTILE

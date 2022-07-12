@@ -158,10 +158,41 @@ Erm... Well maybe just uncomment the autosave?  Because I lost 10 days worth of 
 
 #+BEGIN_SRC emacs-lisp
 (use-package general
-:config
-(general-evil-setup t))
+  :config
+  (general-evil-setup t))
 #+END_SRC
 
+* GENERAL KEBINDINGS
+My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate later.
+
+#+BEGIN_SRC emacs-lisp
+(nvmap :prefix "SPC"
+       "h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config")
+       "m t"   '(org-todo :which-key "Org todo")
+       "m z"   '(darkroom-tentative-mode :which-key "Darkroom (Tentative)")
+       ;"m o"   '(org-set-property :which-key "Org set property") ; I don't like this binding
+       ;"m x"   '(org-toggle-checkbox :which-key "Org toggle checkbox") ; Activate when needed
+       "y l"   '(org-store-link :which-key "Org store link") ; store a link, for use with insert/open/etc
+       "m h"   '(org-toggle-heading :which-key "Org toggle heading")
+       "m i"   '(org-toggle-item :which-key "Org toggle item")
+       "m f"   '(org-narrow-to-subtree :which-key "Org focus")
+       "m b"   '(widen :which-key "Org focus back") ; todo write function that toggles instead
+       "m B"   '(org-babel-tangle :which-key "Org babel tangle")
+       "o a"   '(org-agenda :which-key "Org agenda")
+       "o e"   '(eshell :which-key "Open eshell")
+       "o g"   '((lambda () (interactive) (find-file "~/org/goals.org")) :which-key "My Goals")
+       "o h"   '((lambda () (interactive) (find-file "~/org/habits.org")) :which-key "My Org Habits")
+       "o c"   '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :which-key "Emacs Config")
+       "o d"   '((lambda () (interactive) (find-file "~/org/agenda.org")) :which-key "Daily Habits (Agenda)") ; "daily" is awkward
+       "p p"   '(projectile-switch-project :which-key "Projectile Switch Project")
+       "p f"   '(projectile-find-file :which-key "Projectile Find File")
+       "p k"   '(projectile-kill-buffers :which-key "Projectile Kill Buffers")
+       "w r"   '(windresize :which-key "Resize Windows")
+       "c"     'org-capture
+       "/"     'swiper
+       )
+#+END_SRC
+  
 * START-UP PERFORMANCE
   This section will make emacs load more quickly.
 
@@ -212,16 +243,16 @@ Erm... Well maybe just uncomment the autosave?  Because I lost 10 days worth of 
 * BUFFERS AND BOOKMARKS
   These appear to be useful for DT. I do not use buffer commands extensively in Emacs yet, preferring C-x o.  I expect to change my behavior but for now the following block is NOT ACTIVE!
 
-  #+begin_src emacs-lisp
- (nvmap :keymaps 'override :prefix "SPC"
-       "b b"   '(ibuffer :which-key "Ibuffer")
-       "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
-       "b k"   '(kill-current-buffer :which-key "Kill current buffer")
-       "b n"   '(next-buffer :which-key "Next buffer")
-       "b p"   '(previous-buffer :which-key "Previous buffer")
-       "b B"   '(ibuffer-list-buffers :which-key "Ibuffer list buffers")
-       "b K"   '(kill-buffer :which-key "Kill buffer"))
-  #+end_src
+#+BEGIN_SRC emacs-lisp
+(nvmap :states '(normal visual) :prefix "SPC"
+  "b b"   '(ibuffer :which-key "Ibuffer")
+  "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
+  "b k"   '(kill-current-buffer :which-key "Kill current buffer")
+  "b n"   '(next-buffer :which-key "Next buffer")
+  "b p"   '(previous-buffer :which-key "Previous buffer")
+  "b B"   '(ibuffer-list-buffers :which-key "Ibuffer list buffers")
+  "b K"   '(kill-buffer :which-key "Kill buffer"))
+#+END_SRC
   
 This may be useful to avoid spurious buffer creation, but the package contains much more
 than this.  Also, I'll need to investigate the source as it is a Wiki-only package.
@@ -289,7 +320,7 @@ This snippet will tell Emacs how to load the file
 | eval-region     | /Evaluate elisp in region/                       | SPC e r    |
 
 #+BEGIN_SRC emacs-lisp
-(nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
+(nvmap :states '(normal visual) :prefix "SPC"
        "e b"   '(eval-buffer :which-key "Eval elisp in buffer")
        "e d"   '(eval-defun :which-key "Eval defun")
        "e e"   '(eval-expression :which-key "Eval elisp expression")
@@ -310,7 +341,7 @@ This snippet will tell Emacs how to load the file
 
 #+BEGIN_SRC emacs-lisp
 ;; TODO map commented lines to correct functions
-(nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
+(nvmap :states '(normal visual) :prefix "SPC"
        "s s"   '(slime :which-key "Start SLIME session")
        "s x"   '(slime-restart-inferior-lisp :which-key "Restart SLIME session")
        "s b"   '(slime-eval-buffer :which-key "Eval buffer in SLIME")
@@ -326,7 +357,7 @@ This snippet will tell Emacs how to load the file
   DT has some really useful file-handling functions in his config. I think I will use these once I get used to leader keys. I don't want to accidentally affect files so the following block is *NOT ACTIVE*
 
 #+begin_src emacs-lisp
-(nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
+(nvmap :states '(normal visual) :prefix "SPC"
        "."     '(find-file :which-key "Find file") ; ok, this is actually nice
        "f f"   '(find-file :which-key "Find file")
        "f r"   '(counsel-recentf :which-key "Recent files")
@@ -403,37 +434,6 @@ You can use the bindings CTRL plus =/- for zooming in/out.  You can also use CTR
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 #+END_SRC
 
-* GENERAL KEBINDINGS
-My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate later.
-
-#+BEGIN_SRC emacs-lisp
-(nvmap :keymaps 'override :prefix "SPC"
-       "h r r" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "Reload emacs config")
-       "m t"   '(org-todo :which-key "Org todo")
-       "m z"   '(darkroom-tentative-mode :which-key "Darkroom (Tentative)")
-       ;"m o"   '(org-set-property :which-key "Org set property") ; I don't like this binding
-       ;"m x"   '(org-toggle-checkbox :which-key "Org toggle checkbox") ; Activate when needed
-       "y l"   '(org-store-link :which-key "Org store link") ; store a link, for use with insert/open/etc
-       "m h"   '(org-toggle-heading :which-key "Org toggle heading")
-       "m i"   '(org-toggle-item :which-key "Org toggle item")
-       "m f"   '(org-narrow-to-subtree :which-key "Org focus")
-       "m b"   '(widen :which-key "Org focus back") ; todo write function that toggles instead
-       "m B"   '(org-babel-tangle :which-key "Org babel tangle")
-       "o a"   '(org-agenda :which-key "Org agenda")
-       "o e"   '(eshell :which-key "Open eshell")
-       "o g"   '((lambda () (interactive) (find-file "~/org/goals.org")) :which-key "My Goals")
-       "o h"   '((lambda () (interactive) (find-file "~/org/habits.org")) :which-key "My Org Habits")
-       "o c"   '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :which-key "Emacs Config")
-       "o d"   '((lambda () (interactive) (find-file "~/org/agenda.org")) :which-key "Daily Habits (Agenda)") ; "daily" is awkward
-       "p p"   '(projectile-switch-project :which-key "Projectile Switch Project")
-       "p f"   '(projectile-find-file :which-key "Projectile Find File")
-       "p k"   '(projectile-kill-buffers :which-key "Projectile Kill Buffers")
-       "w r"   '(windresize :which-key "Resize Windows")
-       "c"     'org-capture
-       "/"     'swiper
-       )
-#+END_SRC
-  
 * AGENDA MODE KEYBINDINGS
   These are my original (pre-general) agenda keybindings. I don't really want this limited to org-mode.
 

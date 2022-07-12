@@ -79,7 +79,15 @@ Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides
   (setq evil-want-C-i-jump nil)
   (setq evil-vsplit-window-right t)
   (setq evil-split-window-below t)
-  (evil-mode))
+  (evil-mode)
+  :config
+  ;; remove if this takes precedence over exiting current emacs commands
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+
+  ;; When in a narrow buffer, visual-line mode splits lines
+  ;; This will keep evil from skipping beyond new-line
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
 (use-package evil-collection
   :after evil
   :config
@@ -113,23 +121,24 @@ This is a ~paredit~ competitor that uses structured editing.  Great idea, but I 
 
 Visual representation of changes, very useful when fat-fingering
 
-Resize hook borrowed from [[https://stackoverflow.com/questions/68230947/how-to-resize-the-undo-tree-visualizer-window][StackOverflow]]
+We have used ~evil-global-set-key~ earlier for visual-line-mode navigation.
+For this particular mode, we do not want that behavior.
+It results in ignoring the tree structure and negates the benefit of evil-mode.
+
++Resize hook borrowed from [[https://stackoverflow.com/questions/68230947/how-to-resize-the-undo-tree-visualizer-window][StackOverflow]]+
 
 #+begin_src emacs-lisp
 (use-package undo-tree
   :config
   (global-undo-tree-mode))
 
-; (defun undo-tree-hook ()
-;   "Hook to make the undo-tree-visualizer window to automatically resize to become smaller"
-;   (interactive)
-;   (unless (not (get-buffer-window " *undo-tree*"))
-;     (save-excursion
-;             (select-window (get-buffer-window " *undo-tree*"))
-;             ;(evil-window-set-width 45)
-; 	    )))
+(defun undo-tree-hook ()
+  "Hook to make the undo-tree-visualizer window to automatically resize to become smaller"
+  (interactive)
+  (evil-local-set-key 'motion "j" 'evil-next-line)
+  (evil-local-set-key 'motion "k" 'evil-previous-line))
 
-; (add-hook 'undo-tree-visualizer-mode-hook 'undo-tree-hook)
+(add-hook 'undo-tree-visualizer-mode-hook 'undo-tree-hook)
 
 #+end_src
 

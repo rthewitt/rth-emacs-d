@@ -133,7 +133,7 @@ It results in ignoring the tree structure and negates the benefit of evil-mode.
   (global-undo-tree-mode))
 
 (defun undo-tree-hook ()
-  "Hook to make the undo-tree-visualizer window to automatically resize to become smaller"
+  "Hook to restore proper up/down motion now that we made j/k use visual-line movement by default"
   (interactive)
   (evil-local-set-key 'motion "j" 'evil-next-line)
   (evil-local-set-key 'motion "k" 'evil-previous-line))

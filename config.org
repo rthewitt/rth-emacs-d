@@ -192,6 +192,7 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        "o e"   '(eshell :which-key "Open eshell")
        "o g"   '((lambda () (interactive) (find-file "~/org/goals.org")) :which-key "My Goals")
        "o h"   '((lambda () (interactive) (find-file "~/org/habits.org")) :which-key "My Org Habits")
+       "o f"   '((lambda () (interactive) (find-file "~/org/fun.org")) :which-key "Fun/Hobbies")
        "o c"   '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :which-key "Emacs Config")
        "o d"   '((lambda () (interactive) (find-file "~/org/agenda.org")) :which-key "Daily Habits (Agenda)") ; "daily" is awkward
        "p p"   '(projectile-switch-project :which-key "Projectile Switch Project")

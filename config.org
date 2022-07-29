@@ -121,6 +121,16 @@ This is a ~paredit~ competitor that uses structured editing.  Great idea, but I 
 
 Visual representation of changes, very useful when fat-fingering
 
+Default behavior for ~display-buffer~ attempts to even out window sizes.
+Just in case it is useful elsewhere I set it to =height-only= instead of =nil.=
+I don't think I need to put this in a hook method, because I don't think the variable will be resized without my permission.
+
+#+begin_src emacs-lisp
+;; (setq even-window-heights nil)
+(setq even-window-sizes 'height-only)
+#+end_src
+
+
 We have used ~evil-global-set-key~ earlier for visual-line-mode navigation.
 For this particular mode, we do not want that behavior.
 It results in ignoring the tree structure and negates the benefit of evil-mode.
@@ -357,13 +367,42 @@ This snippet will tell Emacs how to load the file
   DT has some really useful file-handling functions in his config. I think I will use these once I get used to leader keys. I don't want to accidentally affect files so the following block is *NOT ACTIVE*
 
 #+begin_src emacs-lisp
+;; (interactivie "r") is for when the mark is always active
+;; the commands below were failing on buffer load / emacs startup
+
+;; default behavior uses first line of region only
+;; The commented lines
+;; allow multi-line search strings joined by " "
+;; does not work well for code, and introduces
+;; the problem of paragraph or file-long selections
+(defun mine/find-file-rg (&optional start end)
+  (interactive (when (use-region-p)
+		 (list (region-beginning) (region-end))))
+  (setq deactivate-mark t)
+  ;; (counsel-rg (when start
+  ;; 		(downcase (string-join (mapcar 'string-trim-left (split-string (buffer-substring start end) "\n")) " ")))
+  (counsel-rg (when (use-region-p)
+		(downcase (string-trim-left (buffer-substring start end))))
+              nil nil nil))
+
+(defun mine/find-file-rg-case-sensitive (&optional start end)
+  (interactive (when (use-region-p)
+		 (list (region-beginning) (region-end))))
+  (setq deactivate-mark t)
+  (counsel-rg (when (use-region-p)
+                (string-trim-left (buffer-substring start end)))
+              nil nil nil))
+#+end_src
+
+#+begin_src emacs-lisp
 (nvmap :states '(normal visual) :prefix "SPC"
        "."     '(find-file :which-key "Find file") ; ok, this is actually nice
        "f f"   '(find-file :which-key "Find file")
        "f r"   '(counsel-recentf :which-key "Recent files")
        "f s"   '(save-buffer :which-key "Save file")
        "f u"   '(sudo-edit-find-file :which-key "Sudo find file")
-       "f g"   '(counsel-rg :which-key "Find file using rg")
+       "f g"   '(mine/find-file-rg :which-key "Find file using rg")
+       "f G"   '(mine/find-file-rg-case-sensitive :which-key "Find file using rg (Case Sensitive)")
        ;; "f y"   '(dt/show-and-copy-buffer-path :which-key "Yank file path") ; I want this!
        "f C"   '(copy-file :which-key "Copy file")
        ;"f D"   '(delete-file :which-key "Delete file") ; Too dangerous for my taste

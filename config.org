@@ -28,6 +28,22 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
 ** Setup Package.el to work with MELPA
    My original config had a few extra things like "org" and melpa-stable.  They may be redundant...
+
+
+   Testing interactive delete
+#+begin_src emacs-lisp
+(defun foobar-delete (buffer-name)
+  (interactive "bThis will delete the buffer")
+  (let* ((buffer (get-buffer buffer-name))
+         (filename (buffer-file-name buffer)))
+    (when buffer
+      (when (and filename
+                 (file-exists-p filename))
+        (message "You chose to delete `%s" (buffer-name))
+        (delete-file filename))
+      (kill-buffer buffer)))) 
+
+#+end_src
    
 #+BEGIN_SRC emacs-lisp
 (require 'package)

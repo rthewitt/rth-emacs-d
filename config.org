@@ -805,7 +805,11 @@ Make M-Ret insert headings without blank lines
 (setq org-blank-before-new-entry (quote ((heading . nil)
 (plain-list-item . nil))))
 #+END_SRC
-
+** Clean Folded Outlines
+Do *not* fold blank lines into sub-headings!!!
+#+begin_src emacs-lisp
+(setq org-cycle-separator-lines 1)
+#+end_src
 ** Org Roam
 #+begin_src emacs-lisp
 (use-package org-roam

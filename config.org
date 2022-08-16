@@ -1,7 +1,7 @@
 #+TITLE: Ryan's GNU Emacs Config
 #+AUTHOR: Ryan Hewitt
 #+DESCRIPTION: Ryan's Personal Emac Config
-#+STARTUP: showeverything
+#+STARTUP: overview
 #+SETUPFILE: ~/.emacs.d/org-html-themes/org/theme-readtheorg.setup
 #+EXPORT_FILE_NAME: ~/org/html/config.html
 #+OPTIONS: toc:2

@@ -1009,11 +1009,40 @@ VTerm is a full terminal emulator, using external compiled C code.  Unlike Eshel
    SLIME allows for interactive Common-Lisp evaluation. Make it more bash-like with shortcuts
 
 #+BEGIN_SRC emacs-lisp
-(load (expand-file-name "~/.quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "/usr/bin/sbcl")
+;; (load (expand-file-name "~/.quicklisp/slime-helper.el"))
+;; (setq inferior-lisp-program "/usr/bin/sbcl")
 
-(eval-after-load 'slime-repl
-  `(define-key slime-repl-mode-map (kbd "C-l") 'slime-repl-clear-buffer))
+;; (eval-after-load 'slime-repl
+;;   `(define-key slime-repl-mode-map (kbd "C-l") 'slime-repl-clear-buffer))
+
+(use-package slime-company
+  ;; :after (slime company)
+  :after company
+  :config (setq slime-company-completion 'fuzzy
+		slime-company-after-completion 'slime-company-just-one-space))
+
+(use-package slime
+  :init
+  (require 'slime-autoloads)
+  (setq slime-contribs '(slime-fancy slime-company)
+	slime-lisp-implementations '((sbcl  ("/usr/bin/sbcl"))))
+  (load (expand-file-name "~/.quicklisp/slime-helper.el"))
+  :config
+  (define-key slime-repl-mode-map (kbd "C-l") 'slime-repl-clear-buffer)
+  (slime-setup slime-contribs)
+  )
+
+;; No idea if this will work
+;; I hate copying code, but this came straight from abo-abo
+(defun ora-slime-completion-in-region (_fn completions start end)
+  (funcall completion-in-region-function start end completions))
+
+(advice-add
+ 'slime-display-or-scroll-completions
+ :around #'ora-slime-completion-in-region)
+
+
+
 #+END_SRC
 
 ** Tramp

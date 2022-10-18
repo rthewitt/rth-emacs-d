@@ -218,6 +218,9 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        "w r"   '(windresize :which-key "Resize Windows")
        "c"     'org-capture
        "/"     'swiper
+       "g d"   'counsel-etags-find-tag-at-point
+       ;; I like the idea of using a prefix for searching, currently swiper prefix could expand to 
+       ;; C-c / which is org-sparse-tree (with regex) allows searching down.
        )
 #+END_SRC
   
@@ -548,6 +551,25 @@ I used this extensively before getting an ergo-keyboard. I may wean myself off..
 (use-package cider)
 #+END_SRC
 
+
+#+begin_src emacs-lisp
+
+;; I also found this snippet for async:
+;; https://emacs.stackexchange.com/questions/19075/regenerate-ctags-tags-file-without-freezing-emacs-for-a-while
+
+(use-package counsel-etags
+  :ensure t
+  :after evil
+  :bind (("C-]" . counsel-etags-find-tag-at-point))
+  :init
+  (add-hook 'prog-mode-hook
+        (lambda ()
+          (add-hook 'after-save-hook
+            'counsel-etags-virtual-update-tags 'append 'local)))
+  :config
+  (setq counsel-etags-update-interval 60)
+  (push "build" counsel-etags-ignore-directories))
+#+end_src
 * GRAPHICAL USER INTERFACE TWEAKS
   Let's make GNU Emacs look a little better.
 

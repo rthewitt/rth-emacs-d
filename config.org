@@ -685,6 +685,19 @@ To be honest I'm still unclear on how Counsel / Swiper differ and why they are n
       org-edit-src-content-indentation 0)
 #+END_SRC
 
+** Evil Org Mode
+Trying this on for size.  This will replace heading/subtree movement (e.g, instead of C-c C-f for forward, use g modifier)
+
+#+begin_src emacs-lisp
+(use-package evil-org
+  :after org
+  ; I feel like this should hook itself...
+  :hook (org-mode . (lambda () (evil-org-mode)))
+  :config
+  ;; (require 'evil-org-agenda)
+  ;; (evil-org-agenda-set-keys) ; maybe remove...
+  )
+#+end_src
 
 ** Capture Template for Triage (GTD)
 

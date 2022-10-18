@@ -641,6 +641,26 @@ Walk before you can run.
   :after evil
   :bind ("C-s" . 'avy-goto-char-timer))
 #+end_src
+* Company
+
+I want autocomplete like I used to have in my IDE days.
+Dabbrev (built-in) for now, then maybe ctags or lsp
+
+#+begin_src emacs-lisp
+(use-package company
+  ;; :bind (:map prog-mode-map
+  ;;        ("C-i" . company-indent-or-complete-common)
+  ;;        ("C-M-i" . counsel-company))
+  ;; :hook (emacs-lisp-mode . company-mode)
+  :config
+  ;; (global-company-mode)
+  (setq company-backends '((company-capf company-dabbrev-code slime-company)))
+  :hook (prog-mode . company-mode)
+  )
+
+
+#+end_src
+
 
 * IVY (COUNSEL/SWIPER)
 

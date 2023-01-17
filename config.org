@@ -88,6 +88,9 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides facilities for writing custom extensions.  (I did not know that!) Evil Collection is also installed since it adds 'evil' bindings to parts of Emacs that the standard Evil package does not cover, such as: calendar, help-mode and ibuffer (??)
 
 #+BEGIN_SRC emacs-lisp
+
+
+
 (use-package evil
   :init      ;; tweak evil's configuration before loading it
   (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
@@ -120,6 +123,7 @@ Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides
   :after evil
   :config
   (global-evil-surround-mode t))
+
 #+END_SRC
 
 ** +Symex+
@@ -208,10 +212,9 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        "o e"   '(eshell :which-key "Open eshell")
        "o g"   '((lambda () (interactive) (find-file "~/org/goals.org")) :which-key "My Goals")
        "o h"   '((lambda () (interactive) (find-file "~/org/habits.org")) :which-key "My Org Habits")
-       "o f"   '((lambda () (interactive) (find-file "~/org/fun.org")) :which-key "Fun/Hobbies")
        "o c"   '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :which-key "Emacs Config")
        "o l"   '((lambda () (interactive) (find-file "~/metacog/20220902161514-leveling_system.org")) :which-key "Leveling System")
-       "o d"   '((lambda () (interactive) (find-file "~/org/agenda.org")) :which-key "Daily Habits (Agenda)") ; "daily" is awkward
+       "o d"   '(mine/load-project-agenda :which-key "Do Something")
        "p p"   '(projectile-switch-project :which-key "Projectile Switch Project")
        "p f"   '(projectile-find-file :which-key "Projectile Find File")
        "p k"   '(projectile-kill-buffers :which-key "Projectile Kill Buffers")
@@ -223,6 +226,23 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        ;; C-c / which is org-sparse-tree (with regex) allows searching down.
        )
 #+END_SRC
+
+#+begin_src emacs-lisp
+;; Should allow me to expand my GTD workflow nicely
+(defun mine/load-project-agenda ()
+  (interactive)
+  (let ((prompt "Open GTD Project: "))
+    (ivy-read prompt (list
+		      (cons "Personal" "~/org/agenda.org")
+		      (cons "Client: PD" "~/org/work.pd.org")
+		      (cons "Syntonic" "~/org/work.syntonic.org")
+		      (cons "Family & Friends" "~/org/personal.family.org")
+		      (cons "RV Living" "~/org/personal.rv.org")
+		      (cons "Motorcycle" "~/org/personal.motorcycle.org")
+		      (cons "Skating" "~/org/personal.skating.org"))
+	      :initial-input nil
+	      :action (lambda (project-pair) (interactive) (find-file (cdr project-pair))))))
+#+end_src
   
 * START-UP PERFORMANCE
   This section will make emacs load more quickly.
@@ -562,6 +582,7 @@ I used this extensively before getting an ergo-keyboard. I may wean myself off..
   :after evil
   :bind (("C-]" . counsel-etags-find-tag-at-point))
   :init
+  (setq tags-revert-without-query 1)
   (add-hook 'prog-mode-hook
         (lambda ()
           (add-hook 'after-save-hook
@@ -641,20 +662,23 @@ Walk before you can run.
   :after evil
   :bind ("C-s" . 'avy-goto-char-timer))
 #+end_src
-* Company
+* COMPANY
 
 I want autocomplete like I used to have in my IDE days.
-Dabbrev (built-in) for now, then maybe ctags or lsp
+We are loading completion-at-point-functions, dabbrev (local-file) and etags
+
+I was working forever to get this working in SLIME.
+My current hypothesis is that slime-company loads /from/ the SLIME *​inferior-lisp* buffer.  Originally I assumed that it was fundamental to getting the mode working at all.
+
+I found ~company-files~ for filename completion in the future.
 
 #+begin_src emacs-lisp
 (use-package company
-  ;; :bind (:map prog-mode-map
-  ;;        ("C-i" . company-indent-or-complete-common)
-  ;;        ("C-M-i" . counsel-company))
-  ;; :hook (emacs-lisp-mode . company-mode)
   :config
-  ;; (global-company-mode)
-  (setq company-backends '((company-capf company-dabbrev-code slime-company)))
+  ;; I removed slime-company from this because I had a dependency loop
+  ;; and also I don't know if it even makes sense.
+  (setq company-backends '((company-capf company-dabbrev-code company-etags)))
+  (setq company-transformers '(delete-dups)) ; '(company-sort-by-occurrence)
   :hook (prog-mode . company-mode)
   )
 
@@ -748,6 +772,10 @@ Trying this on for size.  This will replace heading/subtree movement (e.g, inste
 #+begin_src emacs-lisp
 (setq org-capture-templates
       '(("t" "Triage" entry (file+headline "~/org/agenda.org" "Triage")
+         "** %?\n")
+	("s" "Triage Syntonic" entry (file+headline "~/org/work.syntonic.org" "Triage")
+         "** %?\n")
+	("p" "Triage PD" entry (file+headline "~/org/work.pd.org" "Triage")
          "** %?\n"))) 
 #+end_src
 
@@ -1008,29 +1036,45 @@ VTerm is a full terminal emulator, using external compiled C code.  Unlike Eshel
 ** SLIME
    SLIME allows for interactive Common-Lisp evaluation. Make it more bash-like with shortcuts
 
-#+BEGIN_SRC emacs-lisp
+
+   This was my original setup and config.  First I installed sbcl, then quicklisp.
+   Then I loaded quicklisp to run ~(ql:quickload "quicklisp-slime-helper")~ 
+   Then I put this in my config and it was at least /working./
+   
+#+begin_src emacs-lisp
 ;; (load (expand-file-name "~/.quicklisp/slime-helper.el"))
 ;; (setq inferior-lisp-program "/usr/bin/sbcl")
 
 ;; (eval-after-load 'slime-repl
 ;;   `(define-key slime-repl-mode-map (kbd "C-l") 'slime-repl-clear-buffer))
+#+end_src
 
-(use-package slime-company
-  ;; :after (slime company)
-  :after company
-  :config (setq slime-company-completion 'fuzzy
-		slime-company-after-completion 'slime-company-just-one-space))
+
+For no good reason I wanted ~use-package~ everywhere.  So I cobbled this together from a bunch of different sources.  At some point I have multiple SLIME versions, and started over.  The first time I set this up, I needed to add slime-company manually.  Here it's commented out.
+
+I /do/ believe I wanted to use "slime-company" as a backend for company-mode so that I could auto-populate from things in my Lisp image that were defined in the REPL.  I no longer have that, and it may not even make sense.
+
+
+
+#+BEGIN_SRC emacs-lisp
 
 (use-package slime
   :init
   (require 'slime-autoloads)
-  (setq slime-contribs '(slime-fancy slime-company)
-	slime-lisp-implementations '((sbcl  ("/usr/bin/sbcl"))))
+  ;; (setq slime-contribs '(slime-fancy slime-company)
   (load (expand-file-name "~/.quicklisp/slime-helper.el"))
+  (setq inferior-lisp-program "/usr/bin/sbcl"
+	slime-lisp-implementations '((sbcl  ("/usr/bin/sbcl"))))
   :config
+  (setq slime-contribs '(slime-company))
   (define-key slime-repl-mode-map (kbd "C-l") 'slime-repl-clear-buffer)
   (slime-setup slime-contribs)
   )
+
+(use-package slime-company
+  :after company
+  :config (setq slime-company-completion 'fuzzy
+		slime-company-after-completion 'slime-company-just-one-space))
 
 ;; No idea if this will work
 ;; I hate copying code, but this came straight from abo-abo

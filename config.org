@@ -559,6 +559,26 @@ I used this extensively before getting an ergo-keyboard. I may wean myself off..
   (key-chord-define evil-replace-state-map  "jk" 'evil-normal-state))
 
 #+END_SRC
+* EVIL OWL MODE
+#+begin_src emacs-lisp
+;; (use-package evil-owl
+;;   :config
+;;   (setq evil-owl-max-string-length 500)
+;;   (add-to-list 'display-buffer-alist
+;;                '("*evil-owl*"
+;;                  (display-buffer-in-side-window)
+;;                  (side . bottom)
+;;                  (window-height . 0.3)))
+;;   (evil-owl-mode))
+
+(use-package evil-owl
+  :config
+  (setq evil-owl-display-method 'posframe
+        evil-owl-extra-posframe-args '(:width 50 :height 20)
+        evil-owl-max-string-length 50)
+  (evil-owl-mode))
+
+#+end_src
    
 * LANGUAGE SUPPORT
   Adding packages for programming languages so we can have syntax highlighting.

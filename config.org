@@ -653,9 +653,7 @@ because the server starts in terminal!
 ** Display Line Numbers and Truncated Lines
    Line numbers are useful. Am I missing relative lines? It was causing headaches in Vim...
 #+BEGIN_SRC emacs-lisp
-;; Only for Emacs v26.x+
-; (global-display-line-numbers-mode 1)
-(global-linum-mode 1)
+(global-display-line-numbers-mode 1)
 (global-visual-line-mode t)
 (column-number-mode 1)
 #+END_SRC

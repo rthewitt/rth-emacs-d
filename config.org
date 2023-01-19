@@ -87,9 +87,22 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 ** Evil Mode
 Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides facilities for writing custom extensions.  (I did not know that!) Evil Collection is also installed since it adds 'evil' bindings to parts of Emacs that the standard Evil package does not cover, such as: calendar, help-mode and ibuffer (??)
 
+
+#+begin_src emacs-lisp
+;; Testing improvement for Reddit user
+;; Just shows the current register for operation in modeline
+;; Does not work with doom-modeline
+(defun mine/evil-operator-state-tag ()
+  (let* ((register (or evil-this-register 34))
+         (register-contents (evil-get-register register t))
+         (register-string (if (null register-contents)
+                              (format "%c [Empty]" register)
+                            (format "%c: %.10s" register register-contents))))
+    (propertize (concat "Register " register-string) 'face '((:background "purple"))))) 
+
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
-
-
 
 (use-package evil
   :init      ;; tweak evil's configuration before loading it
@@ -102,11 +115,13 @@ Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides
   :config
   ;; remove if this takes precedence over exiting current emacs commands
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-
   ;; When in a narrow buffer, visual-line mode splits lines
   ;; This will keep evil from skipping beyond new-line
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+  ;; was just to help show the current register
+  ;; (setq evil-operator-state-tag 'mine/evil-operator-state-tag)
+  )
 (use-package evil-collection
   :after evil
   :config

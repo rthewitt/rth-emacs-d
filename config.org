@@ -97,6 +97,7 @@ Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides
   (setq evil-want-C-i-jump nil)
   (setq evil-vsplit-window-right t)
   (setq evil-split-window-below t)
+  (setq evil-undo-system 'undo-tree)
   (evil-mode)
   :config
   ;; remove if this takes precedence over exiting current emacs commands

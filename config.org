@@ -384,7 +384,8 @@ This snippet will tell Emacs how to load the file
        "e d"   '(eval-defun :which-key "Eval defun")
        "e e"   '(eval-expression :which-key "Eval elisp expression")
        "e l"   '(eval-last-sexp :which-key "Eval last sexression")
-       "e p"   '(eval-print-last-sexp :which-key "Eval +PRINT+ last sexression")
+       ;; "e p"   '(eval-print-last-sexp :which-key "Eval +PRINT+ last sexression")
+       "e p"   '(pp-eval-last-sexp :which-key "Eval +PRINT+ last sexression")
        "e r"   '(eval-region :which-key "Eval region"))
 #+END_SRC
 

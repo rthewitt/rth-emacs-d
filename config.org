@@ -88,20 +88,6 @@ https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides facilities for writing custom extensions.  (I did not know that!) Evil Collection is also installed since it adds 'evil' bindings to parts of Emacs that the standard Evil package does not cover, such as: calendar, help-mode and ibuffer (??)
 
 
-#+begin_src emacs-lisp
-;; Testing improvement for Reddit user
-;; Just shows the current register for operation in modeline
-;; Does not work with doom-modeline
-(defun mine/evil-operator-state-tag ()
-  (let* ((register (or evil-this-register 34))
-         (register-contents (evil-get-register register t))
-         (register-string (if (null register-contents)
-                              (format "%c [Empty]" register)
-                            (format "%c: %.10s" register register-contents))))
-    (propertize (concat "Register " register-string) 'face '((:background "purple"))))) 
-
-#+end_src
-
 #+BEGIN_SRC emacs-lisp
 
 (use-package evil
@@ -681,9 +667,40 @@ because the server starts in terminal!
 
 ** Change Modeline To Doom's Modeline
 #+BEGIN_SRC emacs-lisp
+
+;; Testing improvement for Reddit user
+;; Just shows the current register for operation in modeline
+(defun mine/doom-modeline-register-info ()
+  (let* ((register (or evil-this-register 34))
+	 (register-contents (evil-get-register register t))
+	 (register-label (if (bound-and-true-p mine/doom-modeline-register-info--simple)
+			     (format "r[%c]" register)
+			   (format "[reg %c]: %.10s" register register-contents)))
+	 (register-string (if (null register-contents) "[Empty]" register-contents)))
+    (propertize register-label
+		'face 'doom-modeline-highlight
+		'help-echo (format "Register %c : %s" register register-contents))))
+
+(defun mine/doom-modeline-inject-register (modeline-def)
+  (cons (append (car modeline-def)
+		(list '(:eval (doom-modeline-segment--register-info))))
+	(cdr modeline-def)))
+
 (use-package doom-modeline
   :ensure t
-  :init (doom-modeline-mode 1))
+  :init (doom-modeline-mode 1)
+  :config
+  (setq mine/doom-modeline-register-info--simple t)
+  (doom-modeline-def-segment register-info
+    (concat (doom-modeline-spc)
+	    (mine/doom-modeline-register-info)))
+
+  (advice-add 'doom-modeline-format--main :filter-return #'mine/doom-modeline-inject-register)
+  )
+
+(advice-add 'evil-use-register :before (lambda (_) (force-mode-line-update)))
+
+
 #+END_SRC
    
 ** Shift Focus to Help Window

@@ -906,7 +906,51 @@ Better looking lists by replacing asterisks
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
 #+END_SRC
+
+
+** Reveal Hidden Characters
+
+This is a problem I've faced for a long time.  Sometimes I want to look at what's beneath fontify.
+
+#+begin_src emacs-lisp
+
+;; We may want to extend org-appear
+;; the problem is that we want to support non-org files
+;; currently requires 'evil
+(defun mine/raw ()
+  (interactive)
+  (save-excursion
+    (unwind-protect
+	(progn
+	  (with-silent-modifications
+	    (let* ((inner-WORD (unless (use-region-p)
+				 (evil-select-inner-object 'evil-WORD nil nil nil 1)))
+		   (start (if (use-region-p) (region-beginning) (car inner-WORD)))
+		   (end (if (use-region-p) (region-end) (cadr inner-WORD)))
+		   (my-overlay (make-overlay start end))
+		   (contents (buffer-substring start end))
+		   )
+	      (when (> (length (string-trim contents)) 0)
+		(set-text-properties 0 (length contents) '(face highlight) contents)
+		(overlay-put my-overlay 'display contents)
+		(sit-for 0.25)
+		(set-text-properties 0 (length contents) '(face region) contents)
+		(sit-for 3)
+		))))
+      (deactivate-mark)
+      (remove-overlays)))
+  )
+
+;; This needs a mode-toggle
+(use-package org-appear
+  ;; we need to unbind C-; in undo-tree/config
+  :init
+  (setq org-appear-autoentities t)
+  (setq org-appear-autolinks t)
+  (bind-key* "C-?" 'mine/raw))
+#+end_src
 
 ** Source-Code Block Tag Expansion
 

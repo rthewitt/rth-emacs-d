@@ -744,6 +744,33 @@ I found ~company-files~ for filename completion in the future.
 #+end_src
 
 
+* Copilot
+
+Ok, here goes: this will require access via MS.  Are they still using GPT-3?
+
+#+begin_src emacs-lisp
+
+;; Dependencies (already installed: dash, s)
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
+
+
+;; I refuse to use straight.el or quelpa at this point
+;; I want to understand my package system, worry about monkey patching
+(add-to-list 'load-path "~/source/repos/copilot.el")
+(require 'copilot)
+
+(with-eval-after-load 'company
+  ;; disable inline previews
+  (delq 'company-preview-if-just-one-frontend company-frontends))
+  
+(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+
+#+end_src
+
 * IVY (COUNSEL/SWIPER)
 
 I waited a while to install this, but I am sick and tired of the crappy autocomplete minibuffer.  I'm hoping that Ivy will be better, and if it's too limited I will move to [[https://emacs-helm.github.io/helm/][Helm]].

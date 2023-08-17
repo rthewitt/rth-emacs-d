@@ -250,6 +250,25 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
 		      (cons "Skating" "~/org/personal.skating.org"))
 	      :initial-input nil
 	      :action (lambda (project-pair) (interactive) (find-file (cdr project-pair))))))
+
+(setq org-agenda-custom-commands
+      '(("g" . "GTD contexts")
+	("gx" "Custom: IMPORTANT & URGENT"
+         ((org-ql-block '(and (parent (heading "Q1"))
+			      (parent (parent (heading "Action Items"))))
+                        ((org-ql-block-header "Important and Urgent")))
+          (agenda)))
+	("gi" "Custom: IMPORTANT ONLY"
+	 ((org-ql-block '(and (parent (heading "Q2"))
+			      (parent (parent (heading "Action Items"))))
+			((org-ql-block-header "Important")))
+          (agenda)))
+	("gu" "Custom: URGENT"
+	 ((org-ql-block '(and (parent (or (heading "Q1")
+					  (heading "Q3")))
+			      (parent (parent (heading "Action Items"))))
+			((org-ql-block-header "All Urgent Items")))
+          (agenda)))))
 #+end_src
   
 * START-UP PERFORMANCE
@@ -823,7 +842,7 @@ To be honest I'm still unclear on how Counsel / Swiper differ and why they are n
 ;; It's currently writing to my notes file
 ;; I would like to use an inbox of some sort
 (setq org-directory (expand-file-name "~/org/")
-      org-agenda-files '("~/org/agenda.org" "~/org/habits.org" "~/org/goals.org")
+      org-agenda-files '("~/org/agenda.org")
       org-default-notes-file (expand-file-name "notes.org" org-directory)
       org-agenda-hide-tags-regexp "work\\|pd\\|f1\\|personal"
       org-ellipsis " ▼ "
@@ -855,10 +874,13 @@ Trying this on for size.  This will replace heading/subtree movement (e.g, inste
 ** Capture Template for Triage (GTD)
 
 #+begin_src emacs-lisp
+;; TODO, make this general.  Leverage a data model somewhere that specifies project status(es)
 (setq org-capture-templates
       '(("t" "Triage" entry (file+headline "~/org/agenda.org" "Triage")
          "** %?\n")
 	("s" "Triage Syntonic" entry (file+headline "~/org/work.syntonic.org" "Triage")
+         "** %?\n")
+	("h" "Triage House" entry (file+headline "~/org/personal.house.org" "Triage")
          "** %?\n")
 	("p" "Triage PD" entry (file+headline "~/org/work.pd.org" "Triage")
          "** %?\n"))) 

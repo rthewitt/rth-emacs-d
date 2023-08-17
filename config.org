@@ -163,6 +163,8 @@ It results in ignoring the tree structure and negates the benefit of evil-mode.
 
 #+begin_src emacs-lisp
 (use-package undo-tree
+  :custom
+  (undo-tree-auto-save-history nil)
   :config
   (global-undo-tree-mode))
 

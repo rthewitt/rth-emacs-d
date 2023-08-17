@@ -586,15 +586,18 @@ I used this extensively before getting an ergo-keyboard. I may wean myself off..
 #+BEGIN_EXAMPLE
 ;; How this was done on previously
 ;; Difference?  Perhaps 'jk' to activate evil behavior
-;;(require 'evil-escape)
-;;(evil-escape-mode 1)
-;;(setq evil-escape-key-sequence "jk")
+;; (require 'evil-escape)
+;; (evil-escape-mode 1)
+;; (setq evil-escape-key-sequence "jk")
 #+END_EXAMPLE
 
 ** Working Version With Key-Chords
 #+BEGIN_SRC emacs-lisp
 (use-package key-chord
   :after evil
+  :custom
+  (key-chord-two-keys-delay 0.05)
+  (key-chord-safety-interval-forward 0.1)
   :config
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)

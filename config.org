@@ -113,7 +113,9 @@ Evil mode is a 'vi' layer for Emacs. It emulates the features of Vim an provides
   :after evil
   :config
   (setq evil-toggle-key "C-;")
-  (setq evil-collection-mode-list '(dashboard dired ibuffer))
+  (setq evil-collection-mode-list '(dashboard dired ibuffer
+					      (magit magit-repos magit-submodule)
+					      ))
   (evil-collection-init))
 
 (use-package evil-commentary

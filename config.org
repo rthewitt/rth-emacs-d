@@ -219,6 +219,7 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        "o g"   '((lambda () (interactive) (find-file "~/org/goals.org")) :which-key "My Goals")
        "o h"   '((lambda () (interactive) (find-file "~/org/habits.org")) :which-key "My Org Habits")
        "o c"   '((lambda () (interactive) (find-file "~/.emacs.d/config.org")) :which-key "Emacs Config")
+       "o x"   '(mine/load-perspectives :which-key "Saved Perspectives")
        "o l"   '((lambda () (interactive) (find-file "~/metacog/20220902161514-leveling_system.org")) :which-key "Leveling System")
        "o d"   '(mine/load-project-agenda :which-key "Do Something")
        "p p"   '(projectile-switch-project :which-key "Projectile Switch Project")
@@ -234,6 +235,14 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
 #+END_SRC
 
 #+begin_src emacs-lisp
+;; This [currently] closes all buffers and loads my default perspective
+;; TODO kill buffers only when necessary
+(defun mine/load-perspectives ()
+  (interactive)
+  (mapc 'kill-buffer (buffer-list)) ; perhaps unnecessary
+  (persp-state-load "~/.emacs.d/saved-perspectives"))
+
+
 ;; Should allow me to expand my GTD workflow nicely
 (defun mine/load-project-agenda ()
   (interactive)
@@ -1120,6 +1129,8 @@ Perspective.el lets you manage groups of buffers and window layouts.  Supports s
 (use-package perspective
   :bind (("C-x b" . persp-switch-to-buffer*)
          ("C-x k" . persp-kill-buffer*))
+  :custom
+  (persp-mode-prefix-key (kbd "C-x x"))
   :init
   (persp-mode)
   (setq persp-state-default-file "~/.emacs.d/saved-perspectives"))

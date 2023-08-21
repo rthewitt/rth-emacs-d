@@ -910,6 +910,10 @@ This tracks habit consistency and modifies Org Agenda view
 (add-to-list 'org-modules 'org-habit)
 #+end_src
 ** Exporting Latex / PDF
+
+It is imperative that the ~texlive~, ~texlive-fonts-extra~ and ~texlive-latex-extra~ packages are installed.
+Also note that viewing PDF required both ~pdf-tools~ and =M-x pdf-tools-install=
+
 #+begin_src emacs-lisp
 ;; Why two methods of customizing vars?
 (setq org-latex-toc-command "\\tableofcontents \\clearpage")

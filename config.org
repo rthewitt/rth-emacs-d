@@ -227,6 +227,7 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
        "p k"   '(projectile-kill-buffers :which-key "Projectile Kill Buffers")
        "w r"   '(windresize :which-key "Resize Windows")
        "c"     'org-capture
+       "t"     'mine/triage-refile-task
        "/"     'swiper
        "g d"   'counsel-etags-find-tag-at-point
        ;; I like the idea of using a prefix for searching, currently swiper prefix could expand to 
@@ -243,26 +244,56 @@ My Personal keybindings.  I prefer to mimic Doom when possible as I may migrate 
   (persp-state-load "~/.emacs.d/saved-perspectives"))
 
 
+(setq mine/project-list
+      (list
+       (cons "Personal" "~/org/agenda.org")
+       (cons "Client: PD" "~/org/work.pd.org")
+       (cons "Syntonic" "~/org/work.syntonic.org")
+       (cons "Family & Friends" "~/org/personal.family.org")
+       (cons "Coursera" "~/org/personal.coursera.org")
+       (cons "Cooking" "~/org/personal.cooking.org")
+       (cons "Whitney" "~/org/personal.whitney.org")
+       (cons "House" "~/org/personal.house.org")
+       (cons "Piano" "~/org/personal.piano.org")
+       (cons "RV Living" "~/org/personal.rv.org")
+       (cons "Motorcycle" "~/org/personal.motorcycle.org")
+       (cons "Lastpass" "~/org/personal.lastpass.org")
+       (cons "Skating" "~/org/personal.skating.org"))
+      )
+
+
 ;; Should allow me to expand my GTD workflow nicely
 (defun mine/load-project-agenda ()
   (interactive)
   (let ((prompt "Open GTD Project: "))
-    (ivy-read prompt (list
-		      (cons "Personal" "~/org/agenda.org")
-		      (cons "Client: PD" "~/org/work.pd.org")
-		      (cons "Syntonic" "~/org/work.syntonic.org")
-		      (cons "Family & Friends" "~/org/personal.family.org")
-		      (cons "Coursera" "~/org/personal.coursera.org")
-		      (cons "Cooking" "~/org/personal.cooking.org")
-		      (cons "Whitney" "~/org/personal.whitney.org")
-		      (cons "House" "~/org/personal.house.org")
-		      (cons "Piano" "~/org/personal.piano.org")
-		      (cons "RV Living" "~/org/personal.rv.org")
-		      (cons "Motorcycle" "~/org/personal.motorcycle.org")
-		      (cons "Lastpass" "~/org/personal.lastpass.org")
-		      (cons "Skating" "~/org/personal.skating.org"))
+    (ivy-read prompt mine/project-list
 	      :initial-input nil
 	      :action (lambda (project-pair) (interactive) (find-file (cdr project-pair))))))
+
+
+(defun mine/triage-refile-task ()
+  (interactive)
+  (let ((prompt "Refile to project GTD Project: "))
+    (ivy-read prompt mine/project-list
+	      :initial-input nil
+	      :action (lambda (project-pair) (interactive)
+			(ivy-read prompt (list "Q1" "Q2" "Q3" "Q4")
+				  :initial-input "Q"
+				  :action (lambda (priority) (interactive)
+					    (let* ((target-buffer (save-excursion
+								    (find-file (cdr project-pair))
+								    (current-buffer)))
+						   (pos (save-excursion
+							  (org-find-exact-headline-in-buffer priority
+											     target-buffer))))
+					      (org-refile nil nil 
+							  (list priority (cdr project-pair) nil pos)
+							  "Triaged")
+					      (with-current-buffer target-buffer
+						(save-buffer)))
+					    (switch-to-buffer (current-buffer)))))))) 
+
+
 
 (setq org-agenda-custom-commands
       '(("g" . "GTD contexts")

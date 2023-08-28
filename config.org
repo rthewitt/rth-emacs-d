@@ -859,7 +859,7 @@ To be honest I'm still unclear on how Counsel / Swiper differ and why they are n
 ;; It's currently writing to my notes file
 ;; I would like to use an inbox of some sort
 (setq org-directory (expand-file-name "~/org/")
-      org-agenda-files '("~/org/agenda.org")
+      org-agenda-files '("~/org/projects.org")
       org-default-notes-file (expand-file-name "notes.org" org-directory)
       org-agenda-hide-tags-regexp "work\\|pd\\|f1\\|personal"
       org-ellipsis " ▼ "

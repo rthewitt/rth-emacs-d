@@ -1140,8 +1140,7 @@ Do *not* fold blank lines into sub-headings!!!
   (when (file-directory-p "~/metacog")
       (setq projectile-project-search-path (append
                                             projectile-project-search-path
-                                            '("~/metacog"))))
-  (setq projectile-switch-project-action #'projectile-dired))
+                                            '("~/metacog")))))
 					;(projectile-global-mode 1)) ;what is this?
 #+END_SRC
 
